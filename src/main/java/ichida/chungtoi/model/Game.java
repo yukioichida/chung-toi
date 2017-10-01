@@ -1,5 +1,7 @@
 package ichida.chungtoi.model;
 
+import ichida.chungtoi.exception.InvalidPositionException;
+import ichida.chungtoi.exception.PositionAlreadyOccupiedException;
 import ichida.chungtoi.util.GameConstants;
 
 import static ichida.chungtoi.util.GameConstants.*;
@@ -96,8 +98,36 @@ public class Game {
         return this.game;
     }
 
-    public void putChar(int x, int y, char piece) throws Exception {
-        game[x][y] = piece;
+    public void putChar(int x, int y, char piece) throws InvalidPositionException, PositionAlreadyOccupiedException {
+        try {
+            if (game[x][y] != EMPTY) {
+                game[x][y] = piece;
+            } else {
+                throw new PositionAlreadyOccupiedException(x, y);
+            }
+        } catch (ArrayIndexOutOfBoundsException aiobex) {
+            throw new InvalidPositionException();
+        }
+    }
+
+    /**
+     * Método para inserir peça usando coordenada de 1 dimensão.
+     *
+     * @param pos   - posição do jogo em relação a representação de 1 dimensão do jogo.
+     * @param piece - peça a ser inserida no jogo
+     */
+    public void putChar(int pos, char piece) throws InvalidPositionException, PositionAlreadyOccupiedException {
+        int linearPosition = 0;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (linearPosition == pos) {
+                    this.putChar(i, j, piece);
+                    return;
+                }
+                linearPosition++;
+            }
+        }
+        throw new InvalidPositionException();
     }
 
     public int getPlayerIdC() {
@@ -133,7 +163,8 @@ public class Game {
     }
 
     /**
-     * Recebe a representação em string do tabuleiro e popula os dados internos.
+     * Recebe a representação em string do tabuleiro (representação linear)
+     * e popula os dados internos na matriz do jogo.
      *
      * @param boardString - Representação do tabuleiro em string
      */

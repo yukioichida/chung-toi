@@ -1,5 +1,6 @@
 package ichida.chungtoi.state;
 
+import ichida.chungtoi.exception.InvalidOrientationException;
 import ichida.chungtoi.exception.PlayerUndefinedException;
 import ichida.chungtoi.game.GameValidator;
 import ichida.chungtoi.model.Game;
@@ -107,7 +108,7 @@ public class StaticGameState {
                             if (game.getActualPlayer() == playerId) {
                                 return PLAYER_TURN;
                             } else {
-                                return ADVERSARIAL_TURN;
+                                return PLAYER_ADVERSARY_TURN;
                             }
                         }
                     } else {
@@ -132,7 +133,44 @@ public class StaticGameState {
         }
     }
 
-    public static int getAdversaryplayer(Integer playerId) {
+    /**
+     * Insere a peça no tabuleiro do jogador
+     */
+    // FIXME: Falta tratar timeout
+    public static int insertPiece(int playerId, int position, int orientation)
+            throws Exception {
+        Game playerGame = getPlayerGame(playerId);
+        if (playerGame != null) {
+            /* Verifica se a partida foi iniciada. */
+            if (playerGame.isOpen()) {
+                if (playerGame.getActualPlayer() == playerId) {
+                    char piece = playerGame.getPlayerPiece(playerId);
+
+                    /* Verifica se a peça deve ser inserida em modo diagonal ou perpendicular */
+                    if (position == INPUT_PERPENDICULAR) {
+                        playerGame.putChar(position, Character.toUpperCase(piece));
+                    } else if (position == INPUT_DIAGONAL) {
+                        playerGame.putChar(position, Character.toLowerCase(piece));
+                    } else {
+                        // parâmetro inválido
+                        throw new InvalidOrientationException(orientation);
+                    }
+
+                    return PIECE_PLACED;
+                } else {
+                    // Não é a vez do jogador
+                    return ADVERSARY_TURN;
+                }
+            } else {
+                // O jogo não iniciou ainda pois não tem dois jogadores registrados.
+                return GAME_NOT_STARTED;
+            }
+        } else {
+            throw new Exception("Jogador não está participando de nenhuma partida");
+        }
+    }
+
+    public static int getAdversaryPlayer(Integer playerId) {
         Game playerGame = getPlayerGame(playerId);
         if (playerGame != null) {
             return playerGame.getAdversarialPiece(playerId);

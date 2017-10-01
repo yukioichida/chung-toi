@@ -14,5 +14,10 @@ public class GameConstants {
 
     public static final int EMPTY_PLAYER = -1;
 
+    /* Constantes relacionado a posicionamento de peças */
+    public static final int INPUT_PERPENDICULAR = 0;
+
+    public static final int INPUT_DIAGONAL = 1;
+
 
 }

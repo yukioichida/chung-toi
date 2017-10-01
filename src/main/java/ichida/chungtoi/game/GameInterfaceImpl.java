@@ -1,15 +1,17 @@
 package ichida.chungtoi.game;
 
+import ichida.chungtoi.exception.*;
 import ichida.chungtoi.state.StaticGameState;
 import ichida.chungtoi.state.StaticPlayerState;
-import ichida.chungtoi.exception.PlayerAlreadyRegisteredException;
-import ichida.chungtoi.exception.PlayerLimitException;
 import ichida.chungtoi.model.Player;
 import ichida.chungtoi.util.ResultConstants;
 
 import static ichida.chungtoi.util.GameConstants.EMPTY_PLAYER;
 import static ichida.chungtoi.util.GameConstants.PLAYER_C;
 import static ichida.chungtoi.util.GameConstants.PLAYER_E;
+import static ichida.chungtoi.util.ResultConstants.GAME_NOT_STARTED;
+import static ichida.chungtoi.util.ResultConstants.INVALID_PARAMETERS;
+import static ichida.chungtoi.util.ResultConstants.POSITION_ALREADY_OCCUPIED;
 
 public class GameInterfaceImpl implements GameInterface {
 
@@ -81,7 +83,21 @@ public class GameInterfaceImpl implements GameInterface {
 
     @Override
     public int insertPiece(int playerId, int position, int orientation) {
-        return 0;
+        try {
+            return StaticGameState.insertPiece(playerId, position, orientation);
+        } catch (InvalidPositionException ex) {
+            ex.printStackTrace();
+            return INVALID_PARAMETERS;
+        } catch (InvalidOrientationException ex) {
+            ex.printStackTrace();
+            return INVALID_PARAMETERS;
+        } catch (PositionAlreadyOccupiedException ex) {
+            ex.printStackTrace();
+            return POSITION_ALREADY_OCCUPIED;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return GAME_NOT_STARTED;
+        }
     }
 
     @Override
@@ -91,7 +107,7 @@ public class GameInterfaceImpl implements GameInterface {
 
     @Override
     public String getOppositePlayer(int playerId) {
-        Integer adversaryId = StaticGameState.getAdversaryplayer(playerId);
+        Integer adversaryId = StaticGameState.getAdversaryPlayer(playerId);
         if (adversaryId == EMPTY_PLAYER) {
             return "";
         } else {
