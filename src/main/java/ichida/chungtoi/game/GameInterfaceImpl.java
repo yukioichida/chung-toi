@@ -101,7 +101,7 @@ public class GameInterfaceImpl implements GameInterface {
     }
 
     @Override
-    public int movePiece(int playerId, int actualPosition, int stepSize, int orientation) {
+    public int movePiece(int playerId, int actualPosition, int movementDirection, int stepSize, int orientation) {
         return 0;
     }
 

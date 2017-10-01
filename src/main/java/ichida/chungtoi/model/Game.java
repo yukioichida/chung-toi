@@ -74,6 +74,29 @@ public class Game {
     }
 
     /**
+     * @param linearPos - Posição linear da peça
+     * @return Peça de acordo com a posição linear
+     */
+    public char getPiece(int linearPos) {
+        GamePosition position = getPosition(linearPos);
+        if (position.isValidPosition()) {
+            return game[position.getLine()][position.getColumn()];
+        } else {
+            // TODO: tratar melhor o retorno inválido
+            return EMPTY;
+        }
+    }
+
+    /**
+     * @param line   - Linha da peça
+     * @param column - Coluna da peça
+     * @return Peça de acordo com a linha/coluna provida
+     */
+    public char getPiece(int line, int column) {
+        return game[line][column];
+    }
+
+    /**
      * @return Identificador do jogador adversário
      */
     public int getAdversarialPlayerId(Integer id) {
@@ -83,6 +106,25 @@ public class Game {
             return this.playerIdC;
         }
         return EMPTY_PLAYER;
+    }
+
+    /**
+     * Converte uma posição linear em uma posição da matriz do jogo.
+     *
+     * @param pos - posição linear
+     * @return GamePosition com as coordenadas x,y da matriz
+     */
+    public GamePosition getPosition(int pos) {
+        int linearPosition = 0;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (linearPosition == pos) {
+                    return new GamePosition(i, j);
+                }
+                linearPosition++;
+            }
+        }
+        return null;
     }
 
     /**

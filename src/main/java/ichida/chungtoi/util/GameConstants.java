@@ -19,5 +19,15 @@ public class GameConstants {
 
     public static final int INPUT_DIAGONAL = 1;
 
+    /* Constantes de direção de movimentação de peça */
+    public static final int MOVEMENT_UPPER_LEFT = 0;
+    public static final int MOVEMENT_UPPER = 1;
+    public static final int MOVEMENT_UPPER_RIGHT = 2;
+    public static final int MOVEMENT_LEFT = 3;
+    public static final int NO_MOVENT = 4;
+    public static final int MOVEMENT_RIGHT = 5;
+    public static final int MOVEMENT_BOTTOM_LEFT = 6;
+    public static final int MOVEMENT_BOTTOM = 7;
+    public static final int MOVEMENT_BOTTOM_RIGHT = 8;
 
 }

@@ -2,7 +2,8 @@ package ichida.chungtoi.state;
 
 import ichida.chungtoi.exception.InvalidOrientationException;
 import ichida.chungtoi.exception.PlayerUndefinedException;
-import ichida.chungtoi.game.GameValidator;
+import ichida.chungtoi.game.GameOperations;
+import ichida.chungtoi.game.GameResultValidator;
 import ichida.chungtoi.model.Game;
 
 import java.util.ArrayList;
@@ -17,7 +18,9 @@ import static ichida.chungtoi.util.ResultConstants.*;
  */
 public class StaticGameState {
 
+    //TODO: testar os efeitos de botar a lista como synchronized
     private static final List<Game> games;
+
     private static final Logger LOG = Logger.getGlobal();
 
     static {
@@ -99,7 +102,7 @@ public class StaticGameState {
                 if (game.getPlayerIdC() == playerId || game.getPlayerIdE() == playerId) {
                     if (game.isOpen()) {
                         //verificar se ganhou ou perdeu ou empatou
-                        char winner = GameValidator.getWinner(game);
+                        char winner = GameResultValidator.getWinner(game);
                         if (game.getPlayerPiece(playerId) == winner) {
                             return WINNER;
                         } else if (game.getAdversarialPiece(playerId) == winner) {
@@ -137,7 +140,7 @@ public class StaticGameState {
      * Insere a peça no tabuleiro do jogador
      */
     // FIXME: Falta tratar timeout
-    public static int insertPiece(int playerId, int position, int orientation)
+    public static synchronized int insertPiece(int playerId, int position, int orientation)
             throws Exception {
         Game playerGame = getPlayerGame(playerId);
         if (playerGame != null) {
@@ -145,17 +148,7 @@ public class StaticGameState {
             if (playerGame.isOpen()) {
                 if (playerGame.getActualPlayer() == playerId) {
                     char piece = playerGame.getPlayerPiece(playerId);
-
-                    /* Verifica se a peça deve ser inserida em modo diagonal ou perpendicular */
-                    if (position == INPUT_PERPENDICULAR) {
-                        playerGame.putChar(position, Character.toUpperCase(piece));
-                    } else if (position == INPUT_DIAGONAL) {
-                        playerGame.putChar(position, Character.toLowerCase(piece));
-                    } else {
-                        // parâmetro inválido
-                        throw new InvalidOrientationException(orientation);
-                    }
-
+                    GameOperations.insertPiece(piece, position, orientation, playerGame);
                     return PIECE_PLACED;
                 } else {
                     // Não é a vez do jogador
@@ -168,6 +161,11 @@ public class StaticGameState {
         } else {
             throw new Exception("Jogador não está participando de nenhuma partida");
         }
+    }
+
+    public static void movePiece(int playerId, int movementDirection, int actualPosition, int stepSize, int orientation) throws Exception {
+        Game playerGame = getPlayerGame(playerId);
+        GameOperations.movePiece(actualPosition, movementDirection, stepSize, orientation, playerGame);
     }
 
     public static int getAdversaryPlayer(Integer playerId) {

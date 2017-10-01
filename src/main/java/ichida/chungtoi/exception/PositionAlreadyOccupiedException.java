@@ -1,9 +1,11 @@
 package ichida.chungtoi.exception;
 
-public class PositionAlreadyOccupiedException extends Exception{
+import ichida.chungtoi.model.GamePosition;
 
-    public PositionAlreadyOccupiedException(int x, int y) {
-        super(String.format("Posição (%s, %s) já ocupada", x, y));
+public class PositionAlreadyOccupiedException extends Exception {
+
+    public PositionAlreadyOccupiedException(GamePosition pos) {
+        super(String.format("Posição (%s, %s) já ocupada", pos.getLine(), pos.getColumn()));
     }
 
 }

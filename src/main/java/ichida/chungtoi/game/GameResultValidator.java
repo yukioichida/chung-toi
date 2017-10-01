@@ -2,7 +2,10 @@ package ichida.chungtoi.game;
 
 import ichida.chungtoi.model.Game;
 
-public class GameValidator {
+/**
+ * Classe que valida se o jogo possui um vencedor/perdedor.
+ */
+public class GameResultValidator {
 
     /**
      * Retorna o vencedor da partida. Deve ser executado passo a passo,

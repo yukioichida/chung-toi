@@ -32,7 +32,7 @@ public interface GameInterface {
 
     int insertPiece(int playerId, int position, int orientation);
 
-    int movePiece(int playerId, int actualPosition, int stepSize, int orientation);
+    int movePiece(int playerId, int actualPosition, int movementDirection, int stepSize, int orientation);
 
     String getOppositePlayer(int playerId);
 
