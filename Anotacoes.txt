@@ -1,0 +1,14 @@
+- Jogador registra
+	- Verificar se existe um jogo
+		- Se não existe, cria um novo e vira o jogador C
+		- Se existe, associa como jogador E e começa a partida
+
+
+- Criar partida
+	- Varrer todo o map, dentro de um método synchronized
+	- Guarda o primeiro jogo que não tem jogador E
+		- Se for nulo, cria um jogo para o novo jogador
+		- Se sim, insere o jogador como jogador E e atualiza o game na lista
+		- Pode ser lista, não preciso saber da ordem
+		- Porém tem que substituir a partida antiga (referência direta? lista.get(0).setPlayerE("adhasu"))
+			- synchronized para simplificar

@@ -1,6 +1,6 @@
-package ichida.chungtoi.integration;
+package ichida.chungtoi.game;
 
-public interface GameOperation {
+public interface GameInterface {
 
     /**
      * Registra um jogador
