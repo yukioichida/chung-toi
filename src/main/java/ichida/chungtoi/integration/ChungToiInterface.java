@@ -1,9 +1,9 @@
-package ichida.chungtoi.game;
+package ichida.chungtoi.integration;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface GameInterface extends Remote {
+public interface ChungToiInterface extends Remote {
 
     /*
      * Registra um jogador

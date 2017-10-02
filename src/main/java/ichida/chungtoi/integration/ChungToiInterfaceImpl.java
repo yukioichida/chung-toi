@@ -1,4 +1,4 @@
-package ichida.chungtoi.game;
+package ichida.chungtoi.integration;
 
 import ichida.chungtoi.exception.*;
 import ichida.chungtoi.state.StaticGameState;
@@ -14,9 +14,9 @@ import static ichida.chungtoi.util.GameConstants.PLAYER_C;
 import static ichida.chungtoi.util.GameConstants.PLAYER_E;
 import static ichida.chungtoi.util.ResultConstants.*;
 
-public class GameInterfaceImpl extends UnicastRemoteObject implements GameInterface {
+public class ChungToiInterfaceImpl extends UnicastRemoteObject implements ChungToiInterface {
 
-    public GameInterfaceImpl() throws RemoteException {
+    public ChungToiInterfaceImpl() throws RemoteException {
     }
 
     @Override

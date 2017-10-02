@@ -1,7 +1,7 @@
 package ichida.chungtoi;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
-import ichida.chungtoi.game.GameInterface;
+import ichida.chungtoi.integration.ChungToiInterface;
+import ichida.chungtoi.model.Game;
 import ichida.chungtoi.model.Player;
 
 import java.rmi.Naming;
@@ -11,10 +11,10 @@ import static ichida.chungtoi.util.ResultConstants.*;
 
 public class ChungToiClient {
 
-    private GameInterface game;
+    private ChungToiInterface game;
 
     public ChungToiClient(String serverHost) throws Exception {
-        this.game = (GameInterface) Naming.lookup("//" + serverHost + "/chungtoi");
+        this.game = (ChungToiInterface) Naming.lookup("//" + serverHost + "/chungtoi");
     }
 
     public Player registerPlayer(String name) {
@@ -80,6 +80,35 @@ public class ChungToiClient {
                 System.out.println("Você perdeu a partida");
             } else if (result == GAME_NOT_STARTED) {
                 System.out.println("Sua partida ainda não começou");
+            }
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void showGameBoard(Player player) {
+        try {
+            String gameBoard = game.getGameStatus(player.getId());
+            if (gameBoard.isEmpty()) {
+                System.out.println("Partida não iniciada");
+            } else {
+                Game game = new Game();
+                game.populateFromString(gameBoard);
+                System.out.println("Tabuleiro:");
+                System.out.println(game.toString());
+            }
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void showOpponentName(Player player) {
+        try {
+            String oppositePlayer = game.getOppositePlayer(player.getId());
+            if (oppositePlayer.isEmpty()) {
+                System.out.println("Partida não iniciada");
+            } else {
+                System.out.println("Adversário: " + oppositePlayer);
             }
         } catch (RemoteException ex) {
             ex.printStackTrace();

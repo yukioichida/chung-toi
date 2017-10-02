@@ -28,6 +28,15 @@ public class GameOperations {
         }
     }
 
+    /**
+     * Realiza a movimentação de uma determinada peça.
+     *
+     * @param actualPosition    - Posição atual da peça que será movida
+     * @param movementDirection - Direção do movimento
+     * @param nextOrientation   - Orientação da peça após o movimento
+     * @param stepSize          - Quantidade de passos do movimento
+     * @param playerGame        - Jogo atual
+     */
     public static void movePiece(int actualPosition, int movementDirection, int nextOrientation, int stepSize, Game playerGame)
             throws InvalidPositionException, PositionAlreadyOccupiedException, InvalidOrientationException {
         GamePosition gameActualPos = playerGame.getPosition(actualPosition);
@@ -107,8 +116,6 @@ public class GameOperations {
         } else {
             throw new InvalidPositionException(targetPosition);
         }
-
-
     }
 
 }

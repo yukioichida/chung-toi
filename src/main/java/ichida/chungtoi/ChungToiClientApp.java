@@ -4,9 +4,7 @@ import ichida.chungtoi.model.Player;
 
 import java.util.Scanner;
 
-import static ichida.chungtoi.util.ClientConstants.HAS_GAME;
-import static ichida.chungtoi.util.ClientConstants.QUIT_GAME;
-import static ichida.chungtoi.util.ClientConstants.VERIFY_TURN;
+import static ichida.chungtoi.util.ClientConstants.*;
 
 public class ChungToiClientApp {
 
@@ -42,9 +40,21 @@ public class ChungToiClientApp {
                     case VERIFY_TURN:
                         client.verifyTurn(player);
                         break;
+                    case GET_GAME_BOARD:
+                        client.showGameBoard(player);
+                        break;
+                    case GET_ADVERSARY_NAME:
+                        client.showOpponentName(player);
+                        break;
                     default:
                         System.out.println("Opção inválida");
                         break;
+
+                }
+                try {
+                    Thread.sleep(2000L);
+                } catch (InterruptedException e) {
+                    //e.printStackTrace();
                 }
             }
         }
@@ -58,9 +68,10 @@ public class ChungToiClientApp {
         System.out.println("1 - Verificar o status de sua partida");
         System.out.println("2 - Sair do jogo");
         System.out.println("3 - Verificar o turno da partida");
-        System.out.println("4 - Inserir Peça");
-        System.out.println("5 - Movimentar Peça");
-        System.out.println("6 - Nome do Adversário");
+        System.out.println("4 - Mostrar Tabuleiro do Jogo");
+        System.out.println("5 - Inserir Peça");
+        System.out.println("6 - Movimentar Peça");
+        System.out.println("7 - Nome do Adversário");
     }
 
 }

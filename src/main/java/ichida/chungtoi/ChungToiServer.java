@@ -1,6 +1,6 @@
 package ichida.chungtoi;
 
-import ichida.chungtoi.game.GameInterfaceImpl;
+import ichida.chungtoi.integration.ChungToiInterfaceImpl;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -15,7 +15,7 @@ public class ChungToiServer {
             System.out.println("RMI registry already running.");
         }
         try {
-            Naming.rebind ("chungtoi", new GameInterfaceImpl());
+            Naming.rebind ("chungtoi", new ChungToiInterfaceImpl());
             System.out.println ("Chung toi server is ready.");
         } catch (Exception e) {
             System.out.println ("Chung toi server failed:");

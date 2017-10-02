@@ -16,4 +16,5 @@ public class ClientConstants {
 
     public static final int GET_ADVERSARY_NAME = 7;
 
+
 }

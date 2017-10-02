@@ -185,7 +185,7 @@ public class StaticGameState {
     public static int getAdversaryPlayer(Integer playerId) {
         Game playerGame = getPlayerGame(playerId);
         if (playerGame != null) {
-            return playerGame.getAdversarialPiece(playerId);
+            return playerGame.getAdversarialPlayerId(playerId);
         } else {
             //Jogador não está em nenhuma partida
             return EMPTY_PLAYER;
