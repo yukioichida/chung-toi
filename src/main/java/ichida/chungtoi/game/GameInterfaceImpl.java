@@ -20,7 +20,7 @@ public class GameInterfaceImpl extends UnicastRemoteObject implements GameInterf
     }
 
     @Override
-    public int createPlayer(String name) {
+    public int createPlayer(String name) throws RemoteException  {
         Player player = new Player(name);
         try {
             Integer playerId = StaticPlayerState.registerPlayer(player);
@@ -35,7 +35,7 @@ public class GameInterfaceImpl extends UnicastRemoteObject implements GameInterf
     }
 
     @Override
-    public int endGame(int playerId) {
+    public int endGame(int playerId) throws RemoteException {
         try {
             StaticGameState.endGame(playerId);
             return ResultConstants.OK;
@@ -47,7 +47,7 @@ public class GameInterfaceImpl extends UnicastRemoteObject implements GameInterf
     }
 
     @Override
-    public int hasGame(int playerId) {
+    public int hasGame(int playerId) throws RemoteException {
         try {
             char result = StaticGameState.hasGame(playerId);
             // FIXME: temporização
@@ -65,7 +65,7 @@ public class GameInterfaceImpl extends UnicastRemoteObject implements GameInterf
     }
 
     @Override
-    public int isMyTurn(int playerId) {
+    public int isMyTurn(int playerId) throws RemoteException {
         try {
             return StaticGameState.verifyTurn(playerId);
         } catch (Exception e) {
@@ -75,7 +75,7 @@ public class GameInterfaceImpl extends UnicastRemoteObject implements GameInterf
     }
 
     @Override
-    public String getGameStatus(int playerId) {
+    public String getGameStatus(int playerId) throws RemoteException  {
         try {
             return StaticGameState.getGameBoard(playerId);
         } catch (Exception e) {
@@ -85,7 +85,7 @@ public class GameInterfaceImpl extends UnicastRemoteObject implements GameInterf
     }
 
     @Override
-    public int insertPiece(int playerId, int position, int orientation) {
+    public int insertPiece(int playerId, int position, int orientation) throws RemoteException {
         try {
             return StaticGameState.insertPiece(playerId, position, orientation);
         } catch (InvalidPositionException ex) {
@@ -104,7 +104,7 @@ public class GameInterfaceImpl extends UnicastRemoteObject implements GameInterf
     }
 
     @Override
-    public int movePiece(int playerId, int actualPosition, int movementDirection, int stepSize, int orientation) {
+    public int movePiece(int playerId, int actualPosition, int movementDirection, int stepSize, int orientation) throws RemoteException {
         try {
             return StaticGameState.movePiece(playerId, actualPosition, movementDirection, stepSize, orientation);
         } catch (InvalidOrientationException e) {
@@ -123,7 +123,7 @@ public class GameInterfaceImpl extends UnicastRemoteObject implements GameInterf
     }
 
     @Override
-    public String getOppositePlayer(int playerId) {
+    public String getOppositePlayer(int playerId) throws RemoteException{
         Integer adversaryId = StaticGameState.getAdversaryPlayer(playerId);
         if (adversaryId == EMPTY_PLAYER) {
             return "";
