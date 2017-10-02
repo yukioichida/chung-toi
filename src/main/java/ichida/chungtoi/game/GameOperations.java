@@ -28,7 +28,8 @@ public class GameOperations {
         }
     }
 
-    public static void movePiece(int actualPosition, int movementDirection, int nextOrientation, int stepSize, Game playerGame) throws Exception {
+    public static void movePiece(int actualPosition, int movementDirection, int nextOrientation, int stepSize, Game playerGame)
+            throws InvalidPositionException, PositionAlreadyOccupiedException, InvalidOrientationException {
         GamePosition gameActualPos = playerGame.getPosition(actualPosition);
         GamePosition targetPosition;
         char actualPiece = playerGame.getPiece(actualPosition);

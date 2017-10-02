@@ -1,7 +1,9 @@
 package ichida.chungtoi.state;
 
 import ichida.chungtoi.exception.InvalidOrientationException;
+import ichida.chungtoi.exception.InvalidPositionException;
 import ichida.chungtoi.exception.PlayerUndefinedException;
+import ichida.chungtoi.exception.PositionAlreadyOccupiedException;
 import ichida.chungtoi.game.GameOperations;
 import ichida.chungtoi.game.GameResultValidator;
 import ichida.chungtoi.model.Game;
@@ -21,8 +23,6 @@ public class StaticGameState {
     //TODO: testar os efeitos de botar a lista como synchronized
     private static final List<Game> games;
 
-    private static final Logger LOG = Logger.getGlobal();
-
     static {
         games = new ArrayList<>();
     }
@@ -33,7 +33,6 @@ public class StaticGameState {
     public static synchronized void includePlayer(Integer player) {
         for (Game game : games) {
             if (game.getPlayerIdE() == EMPTY_PLAYER) {
-                LOG.info("Jogador " + game.getPlayerIdC() + " vs Jogador" + player);
                 game.setPlayerIdE(player);
                 game.start();
                 return;
@@ -43,7 +42,6 @@ public class StaticGameState {
         Game game = new Game();
         game.setPlayerIdC(player);
         games.add(game);
-        LOG.info("Partida nova criada para o jogador " + player);
     }
 
     /***
@@ -70,13 +68,12 @@ public class StaticGameState {
      */
     public static synchronized char hasGame(Integer playerId) throws Exception {
         if (StaticPlayerState.existPlayer(playerId)) {
-            for (Game game : games) {
-                if (game.isOpen()) {
-                    if (game.getPlayerIdC() == playerId) {
-                        return PLAYER_C;
-                    } else if (game.getPlayerIdE() == playerId) {
-                        return PLAYER_E;
-                    }
+            Game game = getPlayerGame(playerId);
+            if (game.isOpen()) {
+                if (game.getPlayerIdC() == playerId) {
+                    return PLAYER_C;
+                } else if (game.getPlayerIdE() == playerId) {
+                    return PLAYER_E;
                 }
             }
             return EMPTY;
@@ -116,7 +113,7 @@ public class StaticGameState {
                         }
                     } else {
                         // de repente marcar quem venceu no próprio game, ou quem saiu aqui
-                        return -2;
+                        return GAME_NOT_STARTED;
                     }
                 }
             }
@@ -149,6 +146,8 @@ public class StaticGameState {
                 if (playerGame.getActualPlayer() == playerId) {
                     char piece = playerGame.getPlayerPiece(playerId);
                     GameOperations.insertPiece(piece, position, orientation, playerGame);
+                    int opponent = playerGame.getAdversarialPlayerId(playerId);
+                    playerGame.setActualPlayer(opponent);
                     return PIECE_PLACED;
                 } else {
                     // Não é a vez do jogador
@@ -163,9 +162,24 @@ public class StaticGameState {
         }
     }
 
-    public static void movePiece(int playerId, int movementDirection, int actualPosition, int stepSize, int orientation) throws Exception {
+    public static int movePiece(int playerId, int movementDirection, int actualPosition, int stepSize, int orientation)
+            throws InvalidOrientationException, PositionAlreadyOccupiedException, InvalidPositionException {
+        // FIXME: tratar timeoout
         Game playerGame = getPlayerGame(playerId);
-        GameOperations.movePiece(actualPosition, movementDirection, stepSize, orientation, playerGame);
+        if (playerGame != null && playerGame.isOpen()) {
+            if (playerGame.getActualPlayer() == playerId) {
+                GameOperations.movePiece(actualPosition, movementDirection, stepSize, orientation, playerGame);
+                int opponent = playerGame.getAdversarialPlayerId(playerId);
+                playerGame.setActualPlayer(opponent);
+                return PIECE_PLACED;
+            } else {
+                return ADVERSARY_TURN;
+            }
+
+        } else {
+            return GAME_NOT_STARTED;
+        }
+
     }
 
     public static int getAdversaryPlayer(Integer playerId) {

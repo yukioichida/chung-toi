@@ -6,14 +6,18 @@ import ichida.chungtoi.state.StaticPlayerState;
 import ichida.chungtoi.model.Player;
 import ichida.chungtoi.util.ResultConstants;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
 import static ichida.chungtoi.util.GameConstants.EMPTY_PLAYER;
 import static ichida.chungtoi.util.GameConstants.PLAYER_C;
 import static ichida.chungtoi.util.GameConstants.PLAYER_E;
-import static ichida.chungtoi.util.ResultConstants.GAME_NOT_STARTED;
-import static ichida.chungtoi.util.ResultConstants.INVALID_PARAMETERS;
-import static ichida.chungtoi.util.ResultConstants.POSITION_ALREADY_OCCUPIED;
+import static ichida.chungtoi.util.ResultConstants.*;
 
-public class GameInterfaceImpl implements GameInterface {
+public class GameInterfaceImpl extends UnicastRemoteObject implements GameInterface {
+
+    public GameInterfaceImpl() throws RemoteException {
+    }
 
     @Override
     public int createPlayer(String name) {
@@ -46,18 +50,17 @@ public class GameInterfaceImpl implements GameInterface {
     public int hasGame(int playerId) {
         try {
             char result = StaticGameState.hasGame(playerId);
-            // TODO: Botar em constantes
             // FIXME: temporização
             if (result == PLAYER_C) {
-                return 1;
+                return PLAYER_C_GAME;
             } else if (result == PLAYER_E) {
-                return 2;
+                return PLAYER_E_GAME;
             } else {
-                return 0;
+                return NO_GAME;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return ResultConstants.ERROR;
+            return ERROR;
         }
     }
 
@@ -102,7 +105,21 @@ public class GameInterfaceImpl implements GameInterface {
 
     @Override
     public int movePiece(int playerId, int actualPosition, int movementDirection, int stepSize, int orientation) {
-        return 0;
+        try {
+            return StaticGameState.movePiece(playerId, actualPosition, movementDirection, stepSize, orientation);
+        } catch (InvalidOrientationException e) {
+            e.printStackTrace();
+            return INVALID_PARAMETERS;
+        } catch (PositionAlreadyOccupiedException e) {
+            e.printStackTrace();
+            // posição valida mas ja ocupada
+            return POSITION_ALREADY_OCCUPIED;
+        } catch (InvalidPositionException e) {
+            e.printStackTrace();
+            // posição invalida
+            return INVALID_PARAMETERS;
+        }
+
     }
 
     @Override

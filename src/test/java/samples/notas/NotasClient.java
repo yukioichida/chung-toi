@@ -10,6 +10,8 @@ public class NotasClient {
         this.notas = (NotasInterface) Naming.lookup("//localhost/Notas");
     }
 
+
+
     public void incrementaNota() throws Exception {
         double n = notas.incrementaNota("Alexandre");
         System.out.println(n);

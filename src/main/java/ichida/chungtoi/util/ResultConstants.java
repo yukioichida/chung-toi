@@ -11,6 +11,13 @@ public class ResultConstants {
     public static final int ERROR = -1;
 
     /**
+     * Constanes do método temJogo
+     */
+    public static final int NO_GAME = 0;
+    public static final int PLAYER_C_GAME = 1;
+    public static final int PLAYER_E_GAME = 2;
+
+    /**
      * Constantes de resultado do método ehMinhaVez
      */
     public static final int PLAYER_ADVERSARY_TURN = 0;

@@ -145,10 +145,10 @@ public class Game {
             if (game[x][y] != EMPTY) {
                 game[x][y] = piece;
             } else {
-                throw new PositionAlreadyOccupiedException(x, y);
+                throw new PositionAlreadyOccupiedException(new GamePosition(x, y));
             }
         } catch (ArrayIndexOutOfBoundsException aiobex) {
-            throw new InvalidPositionException();
+            throw new InvalidPositionException(new GamePosition(x, y));
         }
     }
 
@@ -169,7 +169,7 @@ public class Game {
                 linearPosition++;
             }
         }
-        throw new InvalidPositionException();
+        throw new InvalidPositionException(new GamePosition(-1, -1));
     }
 
     public int getPlayerIdC() {
