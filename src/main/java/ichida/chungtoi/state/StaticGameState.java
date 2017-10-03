@@ -100,10 +100,21 @@ public class StaticGameState {
                     if (game.isOpen()) {
                         //verificar se ganhou ou perdeu ou empatou
                         char winner = GameResultValidator.getWinner(game);
-                        if (game.getPlayerPiece(playerId) == winner) {
+                        char playerPiece = game.getPlayerPiece(playerId);
+                        char adversaryPiece = game.getAdversarialPiece(playerId);
+                        /* Verifica quem é o vencedor, se existir um */
+                        if (Character.toLowerCase(playerPiece) == Character.toLowerCase(winner)) {
                             return WINNER;
-                        } else if (game.getAdversarialPiece(playerId) == winner) {
+                        } else if (Character.toLowerCase(adversaryPiece) == Character.toLowerCase(winner)) {
                             return LOSER;
+                        } else if (game.getQuitter() != EMPTY_PLAYER) {
+                            if (game.getQuitter() == playerId) {
+                                System.out.println("Jogador " + playerId + " perdeu por W.O.");
+                                return LOSER;
+                            } else {
+                                System.out.println("Jogador " + playerId + " ganhou por W.O.");
+                                return LOSER;
+                            }
                         } else {
                             if (game.getActualPlayer() == playerId) {
                                 return PLAYER_TURN;
@@ -162,6 +173,15 @@ public class StaticGameState {
         }
     }
 
+    /**
+     * Realiza a movimentação das peças de acordo com o estado atual das partidas.
+     *
+     * @param playerId          - Identificador do jogador que está movimentando a peça
+     * @param actualPosition    - Posição da peça que será movida
+     * @param movementDirection - Direção do movimento
+     * @param orientation       - Orientação do movimento
+     * @param stepSize          - Distância do movimento
+     */
     public static int movePiece(int playerId, int actualPosition, int movementDirection, int stepSize, int orientation)
             throws InvalidOrientationException, PositionAlreadyOccupiedException, InvalidPositionException {
         // FIXME: tratar timeoout
@@ -171,7 +191,7 @@ public class StaticGameState {
                 char playerPiece = playerGame.getPlayerPiece(playerId);
                 char movedPiece = playerGame.getPiece(actualPosition);
                 // verifica se a peça que o jogador está tentando movimentar realmente é a dele
-                if (playerPiece == movedPiece) {
+                if (Character.toLowerCase(playerPiece) == Character.toLowerCase(movedPiece)) {
                     GameOperations.movePiece(actualPosition, movementDirection, stepSize, orientation, playerGame);
                     int opponent = playerGame.getOpponentPlayerId(playerId);
                     playerGame.setActualPlayer(opponent);

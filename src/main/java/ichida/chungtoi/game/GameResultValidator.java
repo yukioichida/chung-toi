@@ -30,9 +30,9 @@ public class GameResultValidator {
         for (int i = 0; i < 3; i++) {
             boolean match = true;
             /* Varre linha a linha, verificando se uma linha contem peças iguais */
-            char actualPiece = board[i][0];
+            char actualPiece = Character.toLowerCase(board[i][0]);
             for (int j = 1; j < 3; j++) {
-                char nextPiece = board[i][j];
+                char nextPiece = Character.toLowerCase(board[i][j]);
                 if (nextPiece != actualPiece) {
                     match = false;
                     break;
@@ -48,9 +48,9 @@ public class GameResultValidator {
         for (int i = 0; i < 3; i++) {
             boolean match = true;
             /* Varre coluna a coluna, verificando se uma linha contem peças iguais */
-            char actualPiece = board[0][i];
+            char actualPiece = Character.toLowerCase(board[0][i]);
             for (int j = 1; j < 3; j++) {
-                char nextPiece = board[j][i];
+                char nextPiece = Character.toLowerCase(board[j][i]);
                 // Se alguma peça difere da coluna varrida, ignore
                 if (nextPiece != actualPiece) {
                     match = false;
@@ -66,11 +66,11 @@ public class GameResultValidator {
 
     public static char verifyDiagonalWinner(Game game) {
         char[][] board = game.getGame();
-        char actualChar = board[0][0];
+        char actualChar = Character.toLowerCase(board[0][0]);
         // Diagonal principal
         boolean match = true;
         for (int i = 1; i < 3; i++) {
-            if (actualChar != board[i][i]) {
+            if (actualChar != Character.toLowerCase(board[i][i])) {
                 match = false;
                 break;
             }
@@ -80,9 +80,9 @@ public class GameResultValidator {
         } else {
             // verifica Diagonal Secundária
             match = true;
-            actualChar = board[2][2];
+            actualChar = Character.toLowerCase(board[2][2]);
             for (int i = 1; i < 3; i++) {
-                if (actualChar != board[i][2 - i]) {
+                if (actualChar != Character.toLowerCase(board[i][2 - i])) {
                     match = false;
                     break;
                 }

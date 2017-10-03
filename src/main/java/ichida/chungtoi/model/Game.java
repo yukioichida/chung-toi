@@ -16,7 +16,7 @@ public class Game {
 
     private int actualPlayer;
 
-    private int playerWinner;
+    private int quitter = EMPTY_PLAYER;
 
     private boolean open = false;
 
@@ -47,17 +47,11 @@ public class Game {
      */
     public void endGame(int playerId) {
         this.open = false;
-        // Vitória por WO
-        int opponent = this.getOpponentPlayerId(playerId);
-        this.playerWinner = opponent;
+        this.quitter = playerId;
     }
 
-    public int getPlayerWinner() {
-        return playerWinner;
-    }
-
-    public void setPlayerWinner(int playerWinner) {
-        this.playerWinner = playerWinner;
+    public int getQuitter() {
+        return quitter;
     }
 
     /**
