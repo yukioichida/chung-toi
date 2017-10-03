@@ -16,6 +16,8 @@ public class Game {
 
     private int actualPlayer;
 
+    private int winner = EMPTY_PLAYER;
+
     private int quitter = EMPTY_PLAYER;
 
     private boolean open = false;
@@ -24,9 +26,20 @@ public class Game {
 
     private boolean timeout = false;
 
+    public int getWinner() {
+        return winner;
+    }
+
+    public void setWinner(int winner) {
+        this.winner = winner;
+    }
+
+    public void closeGame() {
+        this.open = false;
+    }
+
     public void timeout() {
         this.timeout = true;
-        this.open = false;
     }
 
     public boolean isTimeout() {

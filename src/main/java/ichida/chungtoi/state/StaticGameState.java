@@ -99,38 +99,34 @@ public class StaticGameState {
     public static synchronized int verifyTurn(Integer playerId) throws Exception {
         // FIXME: falta temporização e verificação de vencedor por WO
         if (StaticPlayerState.existPlayer(playerId)) {
-            for (Game game : games) {
-                // Busca o jogo em que o jogador está participando
-                if (game.getPlayerIdC() == playerId || game.getPlayerIdE() == playerId) {
-                    if (game.isOpen()) {
-                        //verificar se ganhou ou perdeu ou empatou
-                        char winner = GameResultValidator.getWinner(game);
-                        char playerPiece = game.getPlayerPiece(playerId);
-                        char adversaryPiece = game.getAdversarialPiece(playerId);
-                        /* Verifica quem é o vencedor, se existir um */
-                        if (Character.toLowerCase(playerPiece) == Character.toLowerCase(winner)) {
-                            return WINNER;
-                        } else if (Character.toLowerCase(adversaryPiece) == Character.toLowerCase(winner)) {
+            Game game = getPlayerGame(playerId);
+            if (game != null) {
+                if (game.isOpen()) {
+                    if (game.getActualPlayer() == playerId) {
+                        return PLAYER_TURN;
+                    } else {
+                        return PLAYER_ADVERSARY_TURN;
+                    }
+                } else {
+                    if (game.getQuitter() != EMPTY_PLAYER) {
+                        if (game.getQuitter() == playerId) {
+                            System.out.println("Jogador " + playerId + " perdeu por W.O.");
                             return LOSER;
                         } else {
-                            if (game.getActualPlayer() == playerId) {
-                                return PLAYER_TURN;
-                            } else {
-                                return PLAYER_ADVERSARY_TURN;
-                            }
+                            System.out.println("Jogador " + playerId + " ganhou por W.O.");
+                            return WINNER;
                         }
-                    } else {
-                        if (game.getQuitter() != EMPTY_PLAYER) {
-                            if (game.getQuitter() == playerId) {
-                                System.out.println("Jogador " + playerId + " perdeu por W.O.");
-                                return LOSER;
-                            } else {
-                                System.out.println("Jogador " + playerId + " ganhou por W.O.");
-                                return LOSER;
-                            }
-                        }
-                        return GAME_NOT_STARTED;
                     }
+                    if (game.getWinner() != EMPTY_PLAYER){
+                        if (game.getWinner() == playerId) {
+                            System.out.println("Jogador " + playerId + " Ganhou a partida");
+                            return WINNER;
+                        } else {
+                            System.out.println("Jogador " + playerId + " perdeu a partida.");
+                            return LOSER;
+                        }
+                    }
+                    return GAME_NOT_STARTED;
                 }
             }
             // jogador não está em nenhuma partida - estado inconsistente
@@ -157,15 +153,20 @@ public class StaticGameState {
             throws Exception {
         Game playerGame = getPlayerGame(playerId);
         if (playerGame != null) {
-            /* Verifica se a partida foi iniciada. */
-            if (playerGame.isOpen()) {
+            if (playerGame.isTimeout()) {
+                return GAME_TIMEOUT;
+            } else if (playerGame.isOpen()) {/* Verifica se a partida foi iniciada. */
                 if (playerGame.getActualPlayer() == playerId) {
                     char piece = playerGame.getPlayerPiece(playerId);
                     GameOperations.insertPiece(piece, position, orientation, playerGame);
+                    // troca o turno
                     int opponent = playerGame.getOpponentPlayerId(playerId);
                     playerGame.setActualPlayer(opponent);
+                    // atualiza o timestamp da ultima ação para controle de timeout
                     playerGame.setLastUpdate(System.currentTimeMillis());
                     new TimeoutThread(playerGame, WAITING_NEXT_PLAY_TIMEOUT).start();
+                    //verifica se houve um vencedor
+                    defineWinner(playerId, playerGame);
                     return PIECE_PLACED;
                 } else {
                     // Não é a vez do jogador
@@ -190,34 +191,63 @@ public class StaticGameState {
      * @param stepSize          - Distância do movimento
      */
     public static int movePiece(int playerId, int actualPosition, int movementDirection, int stepSize, int orientation)
-            throws InvalidOrientationException, PositionAlreadyOccupiedException, InvalidPositionException {
-        // FIXME: tratar timeoout
+            throws InvalidPositionException, InvalidOrientationException, PositionAlreadyOccupiedException {
         Game playerGame = getPlayerGame(playerId);
-        if (playerGame != null && playerGame.isOpen()) {
-            if (playerGame.getActualPlayer() == playerId) {
-                char playerPiece = playerGame.getPlayerPiece(playerId);
-                char movedPiece = playerGame.getPiece(actualPosition);
-                // verifica se a peça que o jogador está tentando movimentar realmente é a dele
-                if (Character.toLowerCase(playerPiece) == Character.toLowerCase(movedPiece)) {
-                    GameOperations.movePiece(actualPosition, movementDirection, stepSize, orientation, playerGame);
-                    int opponent = playerGame.getOpponentPlayerId(playerId);
-                    playerGame.setActualPlayer(opponent);
-                    playerGame.setLastUpdate(System.currentTimeMillis());
-                    new TimeoutThread(playerGame, WAITING_NEXT_PLAY_TIMEOUT).start();
-                    return PIECE_PLACED;
+        if (playerGame != null) {
+
+            if (playerGame.isTimeout()) {
+                return GAME_TIMEOUT;
+            } else if (playerGame.isOpen()) {
+
+                if (playerGame.getActualPlayer() == playerId) {
+
+                    char playerPiece = playerGame.getPlayerPiece(playerId);
+                    char movedPiece = playerGame.getPiece(actualPosition);
+                    // verifica se a peça que o jogador está tentando movimentar realmente é a dele
+                    if (Character.toLowerCase(playerPiece) == Character.toLowerCase(movedPiece)) {
+
+                        GameOperations.movePiece(actualPosition, movementDirection, stepSize, orientation, playerGame);
+                        // muda o turno
+                        int opponent = playerGame.getOpponentPlayerId(playerId);
+                        playerGame.setActualPlayer(opponent);
+                        // atualiza o timestamp para controle de timeout
+                        playerGame.setLastUpdate(System.currentTimeMillis());
+                        new TimeoutThread(playerGame, WAITING_NEXT_PLAY_TIMEOUT).start();
+                        //verifica se houve um vencedor
+                        defineWinner(playerId, playerGame);
+                        return PIECE_PLACED;
+
+                    } else {
+                        System.out.println("Jogador não pode mover a peça do adversário");
+                        return INVALID_PARAMETERS;
+                    }
+
                 } else {
-                    System.out.println("Jogador não pode mover a peça do adversário");
-                    return INVALID_PARAMETERS;
+                    return ADVERSARY_TURN;
                 }
 
             } else {
-                return ADVERSARY_TURN;
+                return GAME_NOT_STARTED;
             }
-
         } else {
-            return GAME_NOT_STARTED;
+            throw new RuntimeException("Jogador está sem partida");
         }
+    }
 
+    private static void defineWinner(int actualPlayerId, Game game) {
+        char winner = GameResultValidator.getWinner(game);
+        char playerPiece = game.getPlayerPiece(actualPlayerId);
+        char adversaryPiece = game.getAdversarialPiece(actualPlayerId);
+        /* Verifica quem é o vencedor, se existir um */
+        if (Character.toLowerCase(playerPiece) == Character.toLowerCase(winner)) {
+            System.out.println("Jogador venceu: "+actualPlayerId);
+            game.setWinner(actualPlayerId);
+            game.closeGame();
+        } else if (Character.toLowerCase(adversaryPiece) == Character.toLowerCase(winner)) {
+            System.out.println("Jogador perdeu: "+actualPlayerId);
+            game.setWinner(game.getOpponentPlayerId(actualPlayerId));
+            game.closeGame();
+        }
     }
 
     public static int getAdversaryPlayer(Integer playerId) {
@@ -229,5 +259,6 @@ public class StaticGameState {
             return EMPTY_PLAYER;
         }
     }
+
 
 }

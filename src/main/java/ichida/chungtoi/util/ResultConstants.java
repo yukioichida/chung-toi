@@ -38,6 +38,8 @@ public class ResultConstants {
 
     public static final int POSITION_ALREADY_OCCUPIED = 0;
 
+    public static final int GAME_TIMEOUT = 2;
+
     public static final int INVALID_PARAMETERS = -1;
 
     public static final int GAME_NOT_STARTED = -2;

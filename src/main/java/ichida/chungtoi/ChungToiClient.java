@@ -151,6 +151,8 @@ public class ChungToiClient {
                     System.out.println("O jogo ainda não começou");
                 } else if (result == PIECE_PLACED) {
                     System.out.println("Peça inserida com sucesso");
+                } else if (result == GAME_TIMEOUT) {
+                    System.out.println("Jogo encerrado. Algum dos jogadores não executou uma ação dentro do tempo limite");
                 } else {
                     System.out.println("Retorno não esperado");
                 }
@@ -202,6 +204,8 @@ public class ChungToiClient {
                 System.out.println("O jogo ainda não começou.");
             } else if (result == PIECE_PLACED) {
                 System.out.println("Movimento realizado com sucesso");
+            } else if (result == GAME_TIMEOUT) {
+                System.out.println("Jogo encerrado. Algum dos jogadores não executou uma ação dentro do tempo limite");
             } else {
                 System.out.println("Retorno não esperado");
             }
