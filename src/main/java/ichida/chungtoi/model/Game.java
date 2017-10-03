@@ -16,15 +16,23 @@ public class Game {
 
     private int actualPlayer;
 
+    private int playerWinner;
+
     private boolean open = false;
+
+    private long lastUpdate = 0L;
+
+    public long getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(long lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
 
     public Game() {
         game = new char[3][3];
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                game[i][j] = GameConstants.EMPTY;
-            }
-        }
+        reset();
     }
 
     public void start() {
@@ -32,8 +40,35 @@ public class Game {
         this.open = true;
     }
 
-    public void endGame() {
+    /**
+     * Sinaliza o final do jogo.
+     *
+     * @param playerId - Identificador do jogador que decidiu terminar a partida
+     */
+    public void endGame(int playerId) {
         this.open = false;
+        // Vitória por WO
+        int opponent = this.getOpponentPlayerId(playerId);
+        this.playerWinner = opponent;
+    }
+
+    public int getPlayerWinner() {
+        return playerWinner;
+    }
+
+    public void setPlayerWinner(int playerWinner) {
+        this.playerWinner = playerWinner;
+    }
+
+    /**
+     * Reinicia o tabuleiro, removendo todas as peças
+     */
+    public void reset() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                game[i][j] = GameConstants.EMPTY;
+            }
+        }
     }
 
     public boolean isOpen() {
@@ -99,7 +134,7 @@ public class Game {
     /**
      * @return Identificador do jogador adversário
      */
-    public int getAdversarialPlayerId(Integer id) {
+    public int getOpponentPlayerId(Integer id) {
         if (id == this.playerIdC) {
             return this.playerIdE;
         } else if (id == this.playerIdE) {
@@ -140,15 +175,37 @@ public class Game {
         return this.game;
     }
 
-    public void putChar(int x, int y, char piece) throws InvalidPositionException, PositionAlreadyOccupiedException {
+    /**
+     * Substitui uma peça em um espaço
+     *
+     * @param l     - Linha do tabuleiro
+     * @param c     - coluna do tabuleiro
+     * @param piece - peça que substituirá a antiga
+     */
+    public void changePiece(int l, int c, char piece) throws InvalidPositionException {
         try {
-            if (game[x][y] != EMPTY) {
-                game[x][y] = piece;
+            game[l][c] = piece;
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            throw new InvalidPositionException(new GamePosition(l, c));
+        }
+    }
+
+    /**
+     * Insere uma peça em um espaço previamente vazio
+     *
+     * @param l     - Linha do tabuleiro
+     * @param c     - coluna do tabuleiro
+     * @param piece - peça a ser inserida
+     */
+    public void putChar(int l, int c, char piece) throws InvalidPositionException, PositionAlreadyOccupiedException {
+        try {
+            if (game[l][c] == EMPTY) {
+                game[l][c] = piece;
             } else {
-                throw new PositionAlreadyOccupiedException(new GamePosition(x, y));
+                throw new PositionAlreadyOccupiedException(new GamePosition(l, c));
             }
         } catch (ArrayIndexOutOfBoundsException aiobex) {
-            throw new InvalidPositionException(new GamePosition(x, y));
+            throw new InvalidPositionException(new GamePosition(l, c));
         }
     }
 

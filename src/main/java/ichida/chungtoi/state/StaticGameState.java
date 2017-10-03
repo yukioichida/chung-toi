@@ -10,7 +10,6 @@ import ichida.chungtoi.model.Game;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import static ichida.chungtoi.util.GameConstants.*;
 import static ichida.chungtoi.util.ResultConstants.*;
@@ -52,7 +51,8 @@ public class StaticGameState {
         if (StaticPlayerState.existPlayer(player)) {
             for (Game game : games) {
                 if (game.getPlayerIdE() == player || game.getPlayerIdC() == player) {
-                    game.endGame();
+                    game.endGame(player);
+                    game.reset();
                 }
             }
         } else {
@@ -146,7 +146,7 @@ public class StaticGameState {
                 if (playerGame.getActualPlayer() == playerId) {
                     char piece = playerGame.getPlayerPiece(playerId);
                     GameOperations.insertPiece(piece, position, orientation, playerGame);
-                    int opponent = playerGame.getAdversarialPlayerId(playerId);
+                    int opponent = playerGame.getOpponentPlayerId(playerId);
                     playerGame.setActualPlayer(opponent);
                     return PIECE_PLACED;
                 } else {
@@ -162,16 +162,25 @@ public class StaticGameState {
         }
     }
 
-    public static int movePiece(int playerId, int movementDirection, int actualPosition, int stepSize, int orientation)
+    public static int movePiece(int playerId, int actualPosition, int movementDirection, int stepSize, int orientation)
             throws InvalidOrientationException, PositionAlreadyOccupiedException, InvalidPositionException {
         // FIXME: tratar timeoout
         Game playerGame = getPlayerGame(playerId);
         if (playerGame != null && playerGame.isOpen()) {
             if (playerGame.getActualPlayer() == playerId) {
-                GameOperations.movePiece(actualPosition, movementDirection, stepSize, orientation, playerGame);
-                int opponent = playerGame.getAdversarialPlayerId(playerId);
-                playerGame.setActualPlayer(opponent);
-                return PIECE_PLACED;
+                char playerPiece = playerGame.getPlayerPiece(playerId);
+                char movedPiece = playerGame.getPiece(actualPosition);
+                // verifica se a peça que o jogador está tentando movimentar realmente é a dele
+                if (playerPiece == movedPiece) {
+                    GameOperations.movePiece(actualPosition, movementDirection, stepSize, orientation, playerGame);
+                    int opponent = playerGame.getOpponentPlayerId(playerId);
+                    playerGame.setActualPlayer(opponent);
+                    return PIECE_PLACED;
+                } else {
+                    System.out.println("Jogador não pode mover a peça do adversário");
+                    return INVALID_PARAMETERS;
+                }
+
             } else {
                 return ADVERSARY_TURN;
             }
@@ -185,7 +194,7 @@ public class StaticGameState {
     public static int getAdversaryPlayer(Integer playerId) {
         Game playerGame = getPlayerGame(playerId);
         if (playerGame != null) {
-            return playerGame.getAdversarialPlayerId(playerId);
+            return playerGame.getOpponentPlayerId(playerId);
         } else {
             //Jogador não está em nenhuma partida
             return EMPTY_PLAYER;

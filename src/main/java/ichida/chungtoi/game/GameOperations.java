@@ -18,9 +18,9 @@ public class GameOperations {
      */
     public static void insertPiece(char piece, int position, int orientation, Game playerGame) throws Exception {
         /* Verifica se a peça deve ser inserida em modo diagonal ou perpendicular */
-        if (position == INPUT_PERPENDICULAR) {
+        if (orientation == INPUT_PERPENDICULAR) {
             playerGame.putChar(position, Character.toUpperCase(piece));
-        } else if (position == INPUT_DIAGONAL) {
+        } else if (orientation == INPUT_DIAGONAL) {
             playerGame.putChar(position, Character.toLowerCase(piece));
         } else {
             // parâmetro inválido
@@ -33,11 +33,11 @@ public class GameOperations {
      *
      * @param actualPosition    - Posição atual da peça que será movida
      * @param movementDirection - Direção do movimento
-     * @param nextOrientation   - Orientação da peça após o movimento
      * @param stepSize          - Quantidade de passos do movimento
+     * @param nextOrientation   - Orientação da peça após o movimento
      * @param playerGame        - Jogo atual
      */
-    public static void movePiece(int actualPosition, int movementDirection, int nextOrientation, int stepSize, Game playerGame)
+    public static void movePiece(int actualPosition, int movementDirection, int stepSize, int nextOrientation, Game playerGame)
             throws InvalidPositionException, PositionAlreadyOccupiedException, InvalidOrientationException {
         GamePosition gameActualPos = playerGame.getPosition(actualPosition);
         GamePosition targetPosition;
@@ -95,26 +95,41 @@ public class GameOperations {
             targetPosition = gameActualPos;
         }
 
+        char nextPiece = getModifiedPiece(actualPiece, nextOrientation);
+
         // Antes de inserir, verifica se é uma posição válida do tabuleiro
         if (targetPosition.isValidPosition()) {
+            // peça que está na posição que
             char targetPiece = playerGame.getPiece(targetPosition.getLine(), targetPosition.getColumn());
-            if (targetPiece == EMPTY) {
-                char nextPiece;
-                if (nextOrientation == INPUT_PERPENDICULAR) {
-                    nextPiece = Character.toUpperCase(actualPiece);
-                } else if (nextOrientation == INPUT_DIAGONAL) {
-                    nextPiece = Character.toLowerCase(actualPiece);
-                } else {
-                    throw new InvalidOrientationException(nextOrientation);
-                }
-                // Coloca a peça no novo lugar, removendo a peça do lugar antigo
-                playerGame.putChar(targetPosition.getLine(), targetPosition.getColumn(), nextPiece);
-                playerGame.putChar(gameActualPos.getLine(), gameActualPos.getColumn(), EMPTY);
+
+            if (movementDirection == NO_MOVENT) {
+                playerGame.changePiece(gameActualPos.getLine(), gameActualPos.getColumn(), nextPiece);
             } else {
-                throw new PositionAlreadyOccupiedException(targetPosition);
+                if (targetPiece == EMPTY) {
+                    // Coloca a peça no novo lugar, removendo a peça do lugar antigo
+                    playerGame.putChar(targetPosition.getLine(), targetPosition.getColumn(), nextPiece);
+                    playerGame.changePiece(gameActualPos.getLine(), gameActualPos.getColumn(), EMPTY);
+                } else {
+                    throw new PositionAlreadyOccupiedException(targetPosition);
+                }
             }
+
         } else {
             throw new InvalidPositionException(targetPosition);
+        }
+    }
+
+    /**
+     * @return código da peça de acordo com a orientação definida (perpendicular ou diagonal)
+     */
+    private static char getModifiedPiece(char actualPiece, int orientation) throws InvalidOrientationException {
+        // Define a peça de acordo com a orientação definida
+        if (orientation == INPUT_PERPENDICULAR) {
+            return Character.toUpperCase(actualPiece);
+        } else if (orientation == INPUT_DIAGONAL) {
+            return Character.toLowerCase(actualPiece);
+        } else {
+            throw new InvalidOrientationException(orientation);
         }
     }
 

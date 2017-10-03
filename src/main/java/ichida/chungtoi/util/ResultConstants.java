@@ -41,4 +41,6 @@ public class ResultConstants {
 
     public static final int GAME_NOT_STARTED = -2;
 
+    public static final int ORIENTATION_INVERTED = -5;
+
 }

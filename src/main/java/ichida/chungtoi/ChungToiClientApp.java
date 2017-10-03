@@ -46,13 +46,19 @@ public class ChungToiClientApp {
                     case GET_ADVERSARY_NAME:
                         client.showOpponentName(player);
                         break;
+                    case INSERT_PIECE:
+                        client.insertPiece(player);
+                        break;
+                    case MOVE_PIECE:
+                        client.movePiece(player);
+                        break;
                     default:
                         System.out.println("Opção inválida");
                         break;
 
                 }
                 try {
-                    Thread.sleep(2000L);
+                    Thread.sleep(1000L);
                 } catch (InterruptedException e) {
                     //e.printStackTrace();
                 }
@@ -63,6 +69,7 @@ public class ChungToiClientApp {
     }
 
     private static final void showMenu(Player player) {
+        System.out.println("=======================================================================");
         System.out.println("Jogador: " + player.getName() + " - Identificador: " + player.getId());
         System.out.println("Selecione as seguintes opções:");
         System.out.println("1 - Verificar o status de sua partida");
@@ -72,6 +79,7 @@ public class ChungToiClientApp {
         System.out.println("5 - Inserir Peça");
         System.out.println("6 - Movimentar Peça");
         System.out.println("7 - Nome do Adversário");
+        System.out.println("=======================================================================");
     }
 
 }

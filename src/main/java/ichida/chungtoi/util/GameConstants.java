@@ -26,4 +26,5 @@ public class GameConstants {
     public static final int MOVEMENT_BOTTOM = 7;
     public static final int MOVEMENT_BOTTOM_RIGHT = 8;
 
+
 }
