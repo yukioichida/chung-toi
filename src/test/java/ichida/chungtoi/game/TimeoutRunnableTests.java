@@ -8,7 +8,7 @@ public class TimeoutRunnableTests {
         Game game = new Game();
         game.setLastUpdate(1L);
 
-        Thread thread = new Thread(new TimeoutRunnable(game));
+        Thread thread = new Thread(new TimeoutRunnable(game,1L));
 
         game.setLastUpdate(1L);
         thread.start();

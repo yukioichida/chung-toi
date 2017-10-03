@@ -22,6 +22,17 @@ public class Game {
 
     private long lastUpdate = 0L;
 
+    private boolean timeout = false;
+
+    public void timeout() {
+        this.timeout = true;
+        this.open = false;
+    }
+
+    public boolean isTimeout() {
+        return this.timeout;
+    }
+
     public long getLastUpdate() {
         return lastUpdate;
     }

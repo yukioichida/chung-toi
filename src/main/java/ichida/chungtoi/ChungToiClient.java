@@ -56,6 +56,8 @@ public class ChungToiClient {
                 System.out.println("Sua peça: E");
             } else if (result == NO_GAME) {
                 System.out.println("Partida sem jogador adversário. Aguarde.");
+            } else if (result == REGISTER_TIMEOUT) {
+                System.out.println("Partida foi cancelada. Tempo limite esgotado.");
             } else {
                 System.out.printf("Erro ao consultar a partida. Código: " + result);
             }

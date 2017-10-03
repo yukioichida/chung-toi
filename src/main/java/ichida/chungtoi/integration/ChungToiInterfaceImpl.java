@@ -49,15 +49,8 @@ public class ChungToiInterfaceImpl extends UnicastRemoteObject implements ChungT
     @Override
     public int hasGame(int playerId) throws RemoteException {
         try {
-            char result = StaticGameState.hasGame(playerId);
-            // FIXME: temporização
-            if (result == PLAYER_C) {
-                return PLAYER_C_GAME;
-            } else if (result == PLAYER_E) {
-                return PLAYER_E_GAME;
-            } else {
-                return NO_GAME;
-            }
+            int result = StaticGameState.hasGame(playerId);
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
             return ERROR;

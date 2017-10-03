@@ -14,6 +14,7 @@ public class ResultConstants {
      * Constanes do método temJogo
      */
     public static final int NO_GAME = 0;
+    public static final int REGISTER_TIMEOUT = -2;
     public static final int PLAYER_C_GAME = 1;
     public static final int PLAYER_E_GAME = 2;
 

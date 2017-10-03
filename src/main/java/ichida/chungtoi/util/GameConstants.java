@@ -26,5 +26,9 @@ public class GameConstants {
     public static final int MOVEMENT_BOTTOM = 7;
     public static final int MOVEMENT_BOTTOM_RIGHT = 8;
 
+    public static final long WAITING_PLAYER_TIMEOUT = 20000L;
+
+    public static final long WAITING_NEXT_PLAY_TIMEOUT = 20000L;
+
 
 }
