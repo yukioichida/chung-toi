@@ -26,6 +26,13 @@ public class ChungToiClientApp {
         System.out.println("Conexão estabelecida");
 
         Player player = client.registerPlayer(playerName);
+
+        // enquanto
+            // sleep(1segundo)
+            // i++
+            // if ( i == 120)
+                // timeout e break
+
         if (player != null) {
             while (option != QUIT_GAME) {
                 showMenu(player);

@@ -27,6 +27,10 @@ public class ChungToiClient {
         this.game = (ChungToiInterface) Naming.lookup("//" + serverHost + "/chungtoi");
     }
 
+    public ChungToiInterface getInterface(){
+        return this.game;
+    }
+
     public Player registerPlayer(String name) {
         Player player = new Player(name);
         try {

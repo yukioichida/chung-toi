@@ -25,4 +25,9 @@ public class Player {
     public void setId(Integer id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "{ name:" + name + ", id=" + id + '}';
+    }
 }

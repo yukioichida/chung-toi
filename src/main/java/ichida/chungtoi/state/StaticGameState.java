@@ -32,7 +32,8 @@ public class StaticGameState {
      */
     public static synchronized void includePlayer(Integer player) {
         for (Game game : games) {
-            if (game.getPlayerIdE() == EMPTY_PLAYER) {
+            boolean isAvailable = game.getPlayerIdE() == EMPTY_PLAYER;
+            if (isAvailable && !game.isTimeout()) {
                 game.setPlayerIdE(player);
                 game.start();
                 game.setLastUpdate(System.currentTimeMillis());
@@ -125,6 +126,10 @@ public class StaticGameState {
                             System.out.println("Jogador " + playerId + " perdeu a partida.");
                             return LOSER;
                         }
+                    }
+                    if (game.isTimeout()){
+                        System.out.println("Timeout");
+                        return GAME_TIMEOUT;
                     }
                     return GAME_NOT_STARTED;
                 }

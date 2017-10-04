@@ -1,2 +1,9 @@
 # chung-toi
-Chung Toi game implemented using Distributed Systems concepts
+Jogo chamado Chung Toi implementado no modelo cliente-servidor utilizando Java RMI.
+
+## Classes executáveis
+- Cliente: ichida.chungtoi.ChungToiClientApp
+- Servidor: ichida.chungtoi.ChungToiServer
+
+## Pacotes
+- 

@@ -12,3 +12,21 @@
 		- Pode ser lista, não preciso saber da ordem
 		- Porém tem que substituir a partida antiga (referência direta? lista.get(0).setPlayerE("adhasu"))
 			- synchronized para simplificar
+
+- modificar client
+    - fazer um while(não tem jogador)
+    - jogador entrou
+    while não_terminou:
+        while não_eh_minha_vez:
+            sleep
+        ler_jogada_do_usuario(inserir ou mover)
+        se ok:
+            continua
+        senao:
+
+    - a regra de timeout fica mais simples
+
+- Limitar quantidade de jogos (1000)
+
+- só pode botar 3 peças
+- só pode movimentar depois de botar as 3 peças
