@@ -14,10 +14,15 @@ public class Main {
 
     private static ChungToiInterface client;
 
+    private static final Scanner scanner;
+
+    static {
+        scanner = new Scanner(System.in);
+    }
+
     public static void main(String... args) throws Exception {
         System.out.println("Defina seu nome:");
-        Scanner input = new Scanner(System.in);
-        String playerName = input.next();
+        String playerName = scanner.next();
         int option = -1;
         System.out.println("Conectando com o servidor...");
         try {
@@ -79,6 +84,7 @@ public class Main {
         while (gameRunning) {
             int gameStatus = client.isMyTurn(player.getId());
             System.out.println("Esperando o turno do adversário");
+            int insertedPieces = 0;
             while (gameStatus == ADVERSARY_TURN) {
                 Thread.sleep(1000L);
                 gameStatus = client.isMyTurn(player.getId());
@@ -87,15 +93,27 @@ public class Main {
                 gameRunning = false;
                 System.out.println("Você venceu");
             } else if (gameStatus == LOSER) {
+                gameRunning = false;
                 System.out.println("Voce perdeu");
             } else if (gameStatus == PLAYER_TURN) {
+                if (insertedPieces < 3) {
+
+
+                    insertedPieces++;
+                }
                 // Insere se não tiver tres peças
                 // se ja tiver tres peças, move
                 // a contagem de peças pode ser controlada no lado do cliente
             }
         }
-
     }
 
+    public static void showInsertPieceMenu(Player player) throws Exception {
+        System.out.println("Digite a posição do tabuleiro que será inserido a peça [0-8]:");
+        int position = scanner.nextInt();
+        System.out.println("Defina a orientação da peça(0-perpendicular, 1-diagonal):");
+        int orientation = scanner.nextInt();
+        int result = client.insertPiece(player.getId(), position, orientation);
+    }
 
 }
