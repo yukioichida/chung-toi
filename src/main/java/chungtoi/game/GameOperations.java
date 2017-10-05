@@ -1,12 +1,12 @@
-package ichida.chungtoi.game;
+package chungtoi.game;
 
-import ichida.chungtoi.exception.InvalidOrientationException;
-import ichida.chungtoi.exception.InvalidPositionException;
-import ichida.chungtoi.exception.PositionAlreadyOccupiedException;
-import ichida.chungtoi.model.Game;
-import ichida.chungtoi.model.GamePosition;
+import chungtoi.exception.InvalidOrientationException;
+import chungtoi.exception.InvalidPositionException;
+import chungtoi.exception.PositionAlreadyOccupiedException;
+import chungtoi.model.Game;
+import chungtoi.model.GamePosition;
 
-import static ichida.chungtoi.util.GameConstants.*;
+import static chungtoi.util.GameConstants.*;
 
 /**
  * Classe que realiza a movimentação e inserção de peças em um determinado jogo, centralizando as regras do jogo.

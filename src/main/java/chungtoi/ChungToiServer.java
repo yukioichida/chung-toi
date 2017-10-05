@@ -1,6 +1,6 @@
-package ichida.chungtoi;
+package chungtoi;
 
-import ichida.chungtoi.integration.ChungToiInterfaceImpl;
+import chungtoi.integration.ChungToiInterfaceImpl;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;

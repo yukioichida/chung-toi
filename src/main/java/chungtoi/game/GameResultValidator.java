@@ -1,6 +1,6 @@
-package ichida.chungtoi.game;
+package chungtoi.game;
 
-import ichida.chungtoi.model.Game;
+import chungtoi.model.Game;
 
 /**
  * Classe que valida se o jogo possui um vencedor/perdedor.

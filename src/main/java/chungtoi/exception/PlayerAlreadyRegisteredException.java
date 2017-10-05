@@ -1,4 +1,4 @@
-package ichida.chungtoi.exception;
+package chungtoi.exception;
 
 /**
  * Exceção lançada no caso de registro de jogador com o nome já existente na base.

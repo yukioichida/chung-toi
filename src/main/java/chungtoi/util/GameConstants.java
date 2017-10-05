@@ -1,4 +1,4 @@
-package ichida.chungtoi.util;
+package chungtoi.util;
 
 public class GameConstants {
 

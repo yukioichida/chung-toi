@@ -1,4 +1,4 @@
-package ichida.chungtoi.exception;
+package chungtoi.exception;
 
 public class InvalidOrientationException extends Exception {
 

@@ -1,4 +1,4 @@
-package ichida.chungtoi.model;
+package chungtoi.model;
 
 public class GamePosition {
 

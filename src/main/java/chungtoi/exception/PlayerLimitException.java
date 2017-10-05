@@ -1,4 +1,4 @@
-package ichida.chungtoi.exception;
+package chungtoi.exception;
 
 /**
  * Exceção lançada caso o número limite de jogadores seja excedido.

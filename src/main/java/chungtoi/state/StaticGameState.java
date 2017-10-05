@@ -1,19 +1,19 @@
-package ichida.chungtoi.state;
+package chungtoi.state;
 
-import ichida.chungtoi.exception.InvalidOrientationException;
-import ichida.chungtoi.exception.InvalidPositionException;
-import ichida.chungtoi.exception.PlayerUndefinedException;
-import ichida.chungtoi.exception.PositionAlreadyOccupiedException;
-import ichida.chungtoi.game.GameOperations;
-import ichida.chungtoi.game.GameResultValidator;
-import ichida.chungtoi.game.TimeoutThread;
-import ichida.chungtoi.model.Game;
+import chungtoi.exception.InvalidOrientationException;
+import chungtoi.exception.InvalidPositionException;
+import chungtoi.exception.PlayerUndefinedException;
+import chungtoi.exception.PositionAlreadyOccupiedException;
+import chungtoi.game.GameOperations;
+import chungtoi.game.GameResultValidator;
+import chungtoi.game.TimeoutThread;
+import chungtoi.model.Game;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static ichida.chungtoi.util.GameConstants.*;
-import static ichida.chungtoi.util.ResultConstants.*;
+import static chungtoi.util.GameConstants.*;
+import static chungtoi.util.ResultConstants.*;
 
 /**
  * Realiza as operações de acesso e modificações de dados relacionados a partidas, gerenciando o estado das partidas.

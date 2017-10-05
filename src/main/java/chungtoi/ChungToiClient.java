@@ -1,16 +1,16 @@
-package ichida.chungtoi;
+package chungtoi;
 
-import ichida.chungtoi.integration.ChungToiInterface;
-import ichida.chungtoi.model.Game;
-import ichida.chungtoi.model.Player;
+import chungtoi.integration.ChungToiInterface;
+import chungtoi.model.Game;
+import chungtoi.model.Player;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.util.Scanner;
 
-import static ichida.chungtoi.util.ClientConstants.*;
-import static ichida.chungtoi.util.GameConstants.NO_MOVENT;
-import static ichida.chungtoi.util.ResultConstants.*;
+import static chungtoi.util.ClientConstants.*;
+import static chungtoi.util.GameConstants.NO_MOVENT;
+import static chungtoi.util.ResultConstants.*;
 
 public class ChungToiClient {
 

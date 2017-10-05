@@ -1,6 +1,6 @@
-package ichida.chungtoi.exception;
+package chungtoi.exception;
 
-import ichida.chungtoi.model.GamePosition;
+import chungtoi.model.GamePosition;
 
 public class InvalidPositionException extends Exception {
 

@@ -1,4 +1,4 @@
-package ichida.chungtoi.exception;
+package chungtoi.exception;
 
 public class PlayerUndefinedException extends Exception {
 

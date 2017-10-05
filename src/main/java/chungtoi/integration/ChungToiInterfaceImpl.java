@@ -1,18 +1,18 @@
-package ichida.chungtoi.integration;
+package chungtoi.integration;
 
-import ichida.chungtoi.exception.*;
-import ichida.chungtoi.state.StaticGameState;
-import ichida.chungtoi.state.StaticPlayerState;
-import ichida.chungtoi.model.Player;
-import ichida.chungtoi.util.ResultConstants;
+import chungtoi.exception.*;
+import chungtoi.state.StaticGameState;
+import chungtoi.state.StaticPlayerState;
+import chungtoi.model.Player;
+import chungtoi.util.ResultConstants;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-import static ichida.chungtoi.util.GameConstants.EMPTY_PLAYER;
-import static ichida.chungtoi.util.GameConstants.PLAYER_C;
-import static ichida.chungtoi.util.GameConstants.PLAYER_E;
-import static ichida.chungtoi.util.ResultConstants.*;
+import static chungtoi.util.GameConstants.EMPTY_PLAYER;
+import static chungtoi.util.GameConstants.PLAYER_C;
+import static chungtoi.util.GameConstants.PLAYER_E;
+import static chungtoi.util.ResultConstants.*;
 
 public class ChungToiInterfaceImpl extends UnicastRemoteObject implements ChungToiInterface {
 

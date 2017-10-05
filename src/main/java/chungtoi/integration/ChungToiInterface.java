@@ -1,4 +1,4 @@
-package ichida.chungtoi.integration;
+package chungtoi.integration;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

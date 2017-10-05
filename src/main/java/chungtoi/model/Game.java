@@ -1,10 +1,10 @@
-package ichida.chungtoi.model;
+package chungtoi.model;
 
-import ichida.chungtoi.exception.InvalidPositionException;
-import ichida.chungtoi.exception.PositionAlreadyOccupiedException;
-import ichida.chungtoi.util.GameConstants;
+import chungtoi.exception.InvalidPositionException;
+import chungtoi.exception.PositionAlreadyOccupiedException;
+import chungtoi.util.GameConstants;
 
-import static ichida.chungtoi.util.GameConstants.*;
+import static chungtoi.util.GameConstants.*;
 
 public class Game {
 

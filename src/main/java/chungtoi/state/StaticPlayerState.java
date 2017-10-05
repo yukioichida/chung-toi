@@ -1,8 +1,8 @@
-package ichida.chungtoi.state;
+package chungtoi.state;
 
-import ichida.chungtoi.exception.PlayerAlreadyRegisteredException;
-import ichida.chungtoi.exception.PlayerLimitException;
-import ichida.chungtoi.model.Player;
+import chungtoi.exception.PlayerAlreadyRegisteredException;
+import chungtoi.exception.PlayerLimitException;
+import chungtoi.model.Player;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
