@@ -2,8 +2,15 @@
 Jogo chamado Chung Toi implementado no modelo cliente-servidor utilizando Java RMI.
 
 ## Classes executáveis
-- Cliente: ichida.chungtoi.ChungToiClientApp
-- Servidor: ichida.chungtoi.ChungToiServer
+- Cliente: chungtoi.ChungToiClientApp
+- Servidor: chungtoi.ChungToiServer
 
-## Pacotes
-- 
+## Principais Pacotes
+- chungtoi.game:
+Classes que realizam operações no tabuleiro obedecendo a regra do jogo
+- chungtoi.state:
+Classes que gerenciam o estado do jogo
+- chungtoi.model:
+Classes que representam o modelo do jogo
+- chungtoi.integration:
+Classes para integração RMI
