@@ -12,6 +12,9 @@ public class Game {
 
     private int playerIdE = EMPTY_PLAYER;
 
+    private boolean playerCReady = false;
+    private boolean playerEReady = false;
+
     private final char[][] game;
 
     private int actualPlayer;
@@ -25,6 +28,42 @@ public class Game {
     private long lastUpdate = 0L;
 
     private boolean timeout = false;
+
+    public boolean isPlayerCReady() {
+        return playerCReady;
+    }
+
+    public int getPieceQuantity(char piece) {
+        if (piece != EMPTY) {
+            int count = 0;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (Character.toLowerCase(game[i][j]) == Character.toLowerCase(piece)) {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        } else {
+            return 0;
+        }
+    }
+
+    public void playerCReady() {
+        this.playerCReady = true;
+    }
+
+    public boolean isPlayerEReady() {
+        return playerEReady;
+    }
+
+    public void playerEReady() {
+        this.playerEReady = true;
+    }
+
+    public boolean playersReady() {
+        return this.playerCReady && this.playerEReady;
+    }
 
     public int getWinner() {
         return winner;
@@ -141,7 +180,7 @@ public class Game {
     }
 
     /**
-     * @param line   - Linha da peça
+     * @param line - Linha da peça
      * @param column - Coluna da peça
      * @return Peça de acordo com a linha/coluna provida
      */
@@ -196,8 +235,8 @@ public class Game {
     /**
      * Substitui uma peça em um espaço
      *
-     * @param l     - Linha do tabuleiro
-     * @param c     - coluna do tabuleiro
+     * @param l - Linha do tabuleiro
+     * @param c - coluna do tabuleiro
      * @param piece - peça que substituirá a antiga
      */
     public void changePiece(int l, int c, char piece) throws InvalidPositionException {
@@ -211,8 +250,8 @@ public class Game {
     /**
      * Insere uma peça em um espaço previamente vazio
      *
-     * @param l     - Linha do tabuleiro
-     * @param c     - coluna do tabuleiro
+     * @param l - Linha do tabuleiro
+     * @param c - coluna do tabuleiro
      * @param piece - peça a ser inserida
      */
     public void putChar(int l, int c, char piece) throws InvalidPositionException, PositionAlreadyOccupiedException {
@@ -230,7 +269,8 @@ public class Game {
     /**
      * Método para inserir peça usando coordenada de 1 dimensão.
      *
-     * @param pos   - posição do jogo em relação a representação de 1 dimensão do jogo.
+     * @param pos - posição do jogo em relação a representação de 1 dimensão do
+     * jogo.
      * @param piece - peça a ser inserida no jogo
      */
     public void putChar(int pos, char piece) throws InvalidPositionException, PositionAlreadyOccupiedException {
@@ -264,7 +304,8 @@ public class Game {
     }
 
     /**
-     * @return String de representação do tabuleiro do jogo para envio e recebimento de mensagens.
+     * @return String de representação do tabuleiro do jogo para envio e
+     * recebimento de mensagens.
      * <p>
      * Exemplo: C.E.e.CEc
      * </p>
@@ -280,8 +321,8 @@ public class Game {
     }
 
     /**
-     * Recebe a representação em string do tabuleiro (representação linear)
-     * e popula os dados internos na matriz do jogo.
+     * Recebe a representação em string do tabuleiro (representação linear) e
+     * popula os dados internos na matriz do jogo.
      *
      * @param boardString - Representação do tabuleiro em string
      */

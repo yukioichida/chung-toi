@@ -14,6 +14,8 @@ import java.util.List;
 
 import static chungtoi.util.GameConstants.*;
 import static chungtoi.util.ResultConstants.*;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Realiza as operações de acesso e modificações de dados relacionados a partidas, gerenciando o estado das partidas.
@@ -22,20 +24,40 @@ public class StaticGameState {
 
     //TODO: testar os efeitos de botar a lista como synchronized
     private static final List<Game> games;
+    
+    private static final Map<Integer, Integer> reservedOpponents;
 
     static {
         games = new ArrayList<>();
+        reservedOpponents = new ConcurrentHashMap<Integer, Integer>();
     }
-
+    
     /**
      * Inclui um jogador em uma partida. Caso não exista uma partida, será criado uma nova partida.
      */
-    public static synchronized void includePlayer(Integer player) {
+    public static synchronized void includePlayer(Integer player, boolean start) {
+        Game playerGame = getPlayerGame(player);
+        /* caso preregister */
+        if (playerGame != null){
+            char piece = playerGame.getPlayerPiece(player);
+            if (piece == PLAYER_C){
+                playerGame.playerCReady();
+            }else{
+                playerGame.playerEReady();
+            }
+            if (playerGame.playersReady() && start){
+                playerGame.start();
+            }
+            return;
+        }
+        /* caso normal */
         for (Game game : games) {
             boolean isAvailable = game.getPlayerIdE() == EMPTY_PLAYER;
             if (isAvailable && !game.isTimeout()) {
                 game.setPlayerIdE(player);
-                game.start();
+                if (start){
+                    game.start();
+                }
                 game.setLastUpdate(System.currentTimeMillis());
                 return;
             }
@@ -73,14 +95,16 @@ public class StaticGameState {
     public static synchronized int hasGame(Integer playerId) throws Exception {
         if (StaticPlayerState.existPlayer(playerId)) {
             Game game = getPlayerGame(playerId);
-            if ((game != null) && (game.isOpen())) {
-                if (game.getPlayerIdC() == playerId) {
-                    return PLAYER_C_GAME;
-                } else if (game.getPlayerIdE() == playerId) {
-                    return PLAYER_E_GAME;
+            if (game != null){
+                if ((game.isOpen())) {
+                    if (game.getPlayerIdC() == playerId) {
+                        return PLAYER_C_GAME;
+                    } else if (game.getPlayerIdE() == playerId) {
+                        return PLAYER_E_GAME;
+                    }
+                } else if (game.isTimeout()) {
+                    return REGISTER_TIMEOUT;
                 }
-            } else if (game.isTimeout()) {
-                return REGISTER_TIMEOUT;
             }
             return NO_GAME;
         } else {
@@ -163,16 +187,21 @@ public class StaticGameState {
             } else if (playerGame.isOpen()) {/* Verifica se a partida foi iniciada. */
                 if (playerGame.getActualPlayer() == playerId) {
                     char piece = playerGame.getPlayerPiece(playerId);
-                    GameOperations.insertPiece(piece, position, orientation, playerGame);
-                    // troca o turno
-                    int opponent = playerGame.getOpponentPlayerId(playerId);
-                    playerGame.setActualPlayer(opponent);
-                    // atualiza o timestamp da ultima ação para controle de timeout
-                    playerGame.setLastUpdate(System.currentTimeMillis());
-                    new TimeoutThread(playerGame, WAITING_NEXT_PLAY_TIMEOUT).start();
-                    //verifica se houve um vencedor
-                    defineWinner(playerId, playerGame);
-                    return PIECE_PLACED;
+                    if (playerGame.getPieceQuantity(piece) < 3){
+                        GameOperations.insertPiece(piece, position, orientation, playerGame);
+                        // troca o turno
+                        int opponent = playerGame.getOpponentPlayerId(playerId);
+                        playerGame.setActualPlayer(opponent);
+                        // atualiza o timestamp da ultima ação para controle de timeout
+                        playerGame.setLastUpdate(System.currentTimeMillis());
+                        new TimeoutThread(playerGame, WAITING_NEXT_PLAY_TIMEOUT).start();
+                        //verifica se houve um vencedor
+                        defineWinner(playerId, playerGame);
+                        return PIECE_PLACED;
+                    }else {
+                        /* fase de posicionamento encerrada */
+                        return PHASE_INSERT_ENDED;
+                    }
                 } else {
                     // Não é a vez do jogador
                     return ADVERSARY_TURN;

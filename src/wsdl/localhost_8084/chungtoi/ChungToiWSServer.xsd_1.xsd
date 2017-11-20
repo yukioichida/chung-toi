@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is Metro/2.3 (tags/2.3-7528; 2013-04-29T19:34:10+0000) JAXWS-RI/2.2.8 JAXWS/2.2 svn-revision#unknown. --><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is Metro/2.3 (tags/2.3-7528; 2013-04-29T19:34:10+0000) JAXWS-RI/2.2.8 JAXWS/2.2 svn-revision#unknown. --><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is Metro/2.3 (tags/2.3-7528; 2013-04-29T19:34:10+0000) JAXWS-RI/2.2.8 JAXWS/2.2 svn-revision#unknown. --><xs:schema xmlns:tns="http://ws.integration.chungtoi/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://ws.integration.chungtoi/">
+
+<xs:element name="createPlayer" type="tns:createPlayer"/>
+
+<xs:element name="createPlayerResponse" type="tns:createPlayerResponse"/>
+
+<xs:element name="endGame" type="tns:endGame"/>
+
+<xs:element name="endGameResponse" type="tns:endGameResponse"/>
+
+<xs:element name="getGameStatus" type="tns:getGameStatus"/>
+
+<xs:element name="getGameStatusResponse" type="tns:getGameStatusResponse"/>
+
+<xs:element name="getOppositePlayer" type="tns:getOppositePlayer"/>
+
+<xs:element name="getOppositePlayerResponse" type="tns:getOppositePlayerResponse"/>
+
+<xs:element name="hasGame" type="tns:hasGame"/>
+
+<xs:element name="hasGameResponse" type="tns:hasGameResponse"/>
+
+<xs:element name="hello" type="tns:hello"/>
+
+<xs:element name="helloResponse" type="tns:helloResponse"/>
+
+<xs:element name="insertPiece" type="tns:insertPiece"/>
+
+<xs:element name="insertPieceResponse" type="tns:insertPieceResponse"/>
+
+<xs:element name="isMyTurn" type="tns:isMyTurn"/>
+
+<xs:element name="isMyTurnResponse" type="tns:isMyTurnResponse"/>
+
+<xs:element name="movePiece" type="tns:movePiece"/>
+
+<xs:element name="movePieceResponse" type="tns:movePieceResponse"/>
+
+<xs:element name="preRegister" type="tns:preRegister"/>
+
+<xs:element name="preRegisterResponse" type="tns:preRegisterResponse"/>
+
+<xs:complexType name="insertPiece">
+<xs:sequence>
+<xs:element name="playerId" type="xs:int"/>
+<xs:element name="position" type="xs:int"/>
+<xs:element name="orientation" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="insertPieceResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="endGame">
+<xs:sequence>
+<xs:element name="playerId" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="endGameResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="isMyTurn">
+<xs:sequence>
+<xs:element name="playerId" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="isMyTurnResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="preRegister">
+<xs:sequence>
+<xs:element name="player1Name" type="xs:string" minOccurs="0"/>
+<xs:element name="player1Id" type="xs:int"/>
+<xs:element name="player2Name" type="xs:string" minOccurs="0"/>
+<xs:element name="player2Id" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="preRegisterResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="createPlayer">
+<xs:sequence>
+<xs:element name="name" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="createPlayerResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="hasGame">
+<xs:sequence>
+<xs:element name="playerId" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="hasGameResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getOppositePlayer">
+<xs:sequence>
+<xs:element name="playerId" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getOppositePlayerResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getGameStatus">
+<xs:sequence>
+<xs:element name="playerId" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getGameStatusResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="movePiece">
+<xs:sequence>
+<xs:element name="playerId" type="xs:int"/>
+<xs:element name="actualPosition" type="xs:int"/>
+<xs:element name="movementDirection" type="xs:int"/>
+<xs:element name="stepSize" type="xs:int"/>
+<xs:element name="orientation" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="movePieceResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="hello">
+<xs:sequence>
+<xs:element name="name" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="helloResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

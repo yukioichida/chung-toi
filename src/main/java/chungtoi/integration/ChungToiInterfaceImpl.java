@@ -24,7 +24,7 @@ public class ChungToiInterfaceImpl extends UnicastRemoteObject implements ChungT
         Player player = new Player(name);
         try {
             Integer playerId = StaticPlayerState.registerPlayer(player);
-            StaticGameState.includePlayer(playerId);
+            StaticGameState.includePlayer(playerId, true);
             return playerId;
         } catch (PlayerAlreadyRegisteredException e) {
             e.printStackTrace(); //TODO: Mudar pra LOGGER

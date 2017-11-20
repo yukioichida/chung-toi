@@ -1,5 +1,6 @@
 package chungtoi.game;
 
+import chungtoi.exception.InsertPhaseEndedException;
 import chungtoi.exception.InvalidOrientationException;
 import chungtoi.exception.InvalidPositionException;
 import chungtoi.exception.PositionAlreadyOccupiedException;
@@ -9,14 +10,17 @@ import chungtoi.model.GamePosition;
 import static chungtoi.util.GameConstants.*;
 
 /**
- * Classe que realiza a movimentação e inserção de peças em um determinado jogo, centralizando as regras do jogo.
+ * Classe que realiza a movimentação e inserção de peças em um determinado jogo,
+ * centralizando as regras do jogo.
  */
 public class GameOperations {
 
     /**
-     * Insere uma determinada peça de acordo com as regras do jogo, sem se preocupar com o estado do jogo.
+     * Insere uma determinada peça de acordo com as regras do jogo, sem se
+     * preocupar com o estado do jogo.
      */
     public static void insertPiece(char piece, int position, int orientation, Game playerGame) throws Exception {
+
         /* Verifica se a peça deve ser inserida em modo diagonal ou perpendicular */
         if (orientation == INPUT_PERPENDICULAR) {
             playerGame.putChar(position, Character.toUpperCase(piece));
@@ -26,16 +30,17 @@ public class GameOperations {
             // parâmetro inválido
             throw new InvalidOrientationException(orientation);
         }
+
     }
 
     /**
      * Realiza a movimentação de uma determinada peça.
      *
-     * @param actualPosition    - Posição atual da peça que será movida
+     * @param actualPosition - Posição atual da peça que será movida
      * @param movementDirection - Direção do movimento
-     * @param stepSize          - Quantidade de passos do movimento
-     * @param nextOrientation   - Orientação da peça após o movimento
-     * @param playerGame        - Jogo atual
+     * @param stepSize - Quantidade de passos do movimento
+     * @param nextOrientation - Orientação da peça após o movimento
+     * @param playerGame - Jogo atual
      */
     public static void movePiece(int actualPosition, int movementDirection, int stepSize, int nextOrientation, Game playerGame)
             throws InvalidPositionException, PositionAlreadyOccupiedException, InvalidOrientationException {
@@ -120,7 +125,8 @@ public class GameOperations {
     }
 
     /**
-     * @return código da peça de acordo com a orientação definida (perpendicular ou diagonal)
+     * @return código da peça de acordo com a orientação definida (perpendicular
+     * ou diagonal)
      */
     private static char getModifiedPiece(char actualPiece, int orientation) throws InvalidOrientationException {
         // Define a peça de acordo com a orientação definida
