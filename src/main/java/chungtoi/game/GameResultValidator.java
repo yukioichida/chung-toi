@@ -1,6 +1,7 @@
 package chungtoi.game;
 
 import chungtoi.model.Game;
+import chungtoi.util.GameConstants;
 
 /**
  * Classe que valida se o jogo possui um vencedor/perdedor.
@@ -38,7 +39,7 @@ public class GameResultValidator {
                     break;
                 }
             }
-            if (match) {
+            if (match && actualPiece != GameConstants.EMPTY) {
                 return actualPiece;
             }
         }
@@ -79,12 +80,11 @@ public class GameResultValidator {
             return actualChar;
         } else {
             // verifica Diagonal Secundária
-            match = true;
-            actualChar = Character.toLowerCase(board[2][2]);
-            for (int i = 1; i < 3; i++) {
-                if (actualChar != Character.toLowerCase(board[i][2 - i])) {
-                    match = false;
-                    break;
+            match = false;
+            actualChar = Character.toLowerCase(board[0][2]);
+            if (actualChar == Character.toLowerCase(board[1][1])){
+                if (actualChar == Character.toLowerCase(board[2][0])){
+                    match = true;
                 }
             }
             if (match) {

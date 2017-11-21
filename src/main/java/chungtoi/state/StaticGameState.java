@@ -1,12 +1,13 @@
 package chungtoi.state;
 
+import chungtoi.exception.InvalidMoveException;
 import chungtoi.exception.InvalidOrientationException;
 import chungtoi.exception.InvalidPositionException;
 import chungtoi.exception.PlayerUndefinedException;
 import chungtoi.exception.PositionAlreadyOccupiedException;
 import chungtoi.game.GameOperations;
 import chungtoi.game.GameResultValidator;
-import chungtoi.game.TimeoutThread;
+//import chungtoi.game.TimeoutThread;
 import chungtoi.model.Game;
 
 import java.util.ArrayList;
@@ -14,38 +15,42 @@ import java.util.List;
 
 import static chungtoi.util.GameConstants.*;
 import static chungtoi.util.ResultConstants.*;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Realiza as operações de acesso e modificações de dados relacionados a partidas, gerenciando o estado das partidas.
+ * Realiza as operações de acesso e modificações de dados relacionados a
+ * partidas, gerenciando o estado das partidas.
  */
 public class StaticGameState {
 
     //TODO: testar os efeitos de botar a lista como synchronized
     private static final List<Game> games;
-    
+
     private static final Map<Integer, Integer> reservedOpponents;
 
     static {
         games = new ArrayList<>();
-        reservedOpponents = new ConcurrentHashMap<Integer, Integer>();
+        reservedOpponents = new HashMap<Integer, Integer>();
     }
-    
+
     /**
-     * Inclui um jogador em uma partida. Caso não exista uma partida, será criado uma nova partida.
+     * Inclui um jogador em uma partida. Caso não exista uma partida, será
+     * criado uma nova partida.
      */
     public static synchronized void includePlayer(Integer player, boolean start) {
         Game playerGame = getPlayerGame(player);
         /* caso preregister */
-        if (playerGame != null){
+        if (playerGame != null) {
             char piece = playerGame.getPlayerPiece(player);
-            if (piece == PLAYER_C){
+            if (piece == PLAYER_C) {
                 playerGame.playerCReady();
-            }else{
+            } else {
                 playerGame.playerEReady();
             }
-            if (playerGame.playersReady() && start){
+            if (playerGame.playersReady() && start) {
                 playerGame.start();
             }
             return;
@@ -55,7 +60,7 @@ public class StaticGameState {
             boolean isAvailable = game.getPlayerIdE() == EMPTY_PLAYER;
             if (isAvailable && !game.isTimeout()) {
                 game.setPlayerIdE(player);
-                if (start){
+                if (start) {
                     game.start();
                 }
                 game.setLastUpdate(System.currentTimeMillis());
@@ -66,11 +71,13 @@ public class StaticGameState {
         Game game = new Game();
         game.setPlayerIdC(player);
         games.add(game);
-        new TimeoutThread(game, WAITING_PLAYER_TIMEOUT).start();
+        //new TimeoutThread(game, WAITING_PLAYER_TIMEOUT).start();
     }
 
-    /***
+    /**
+     * *
      * Encerra a partida em que um determinado jogador está participando.
+     *
      * @param player - Identificador do jogador que deseja encerrar a partida.
      */
     public static synchronized void endGame(Integer player) throws Exception {
@@ -87,7 +94,8 @@ public class StaticGameState {
     }
 
     /**
-     * Verifica se um determinado jogador está participando de uma partida, retornando sua peça caso esteja.
+     * Verifica se um determinado jogador está participando de uma partida,
+     * retornando sua peça caso esteja.
      *
      * @param playerId - Identificador do jogador
      * @return Se não está participando retorna vazio, senão retorna a peça
@@ -95,7 +103,7 @@ public class StaticGameState {
     public static synchronized int hasGame(Integer playerId) throws Exception {
         if (StaticPlayerState.existPlayer(playerId)) {
             Game game = getPlayerGame(playerId);
-            if (game != null){
+            if (game != null) {
                 if ((game.isOpen())) {
                     if (game.getPlayerIdC() == playerId) {
                         return PLAYER_C_GAME;
@@ -112,7 +120,7 @@ public class StaticGameState {
         }
     }
 
-    private static Game getPlayerGame(Integer playerId) {
+    private static synchronized Game getPlayerGame(Integer playerId) {
         for (Game game : games) {
             if (game.getPlayerIdE() == playerId || game.getPlayerIdC() == playerId) {
                 return game;
@@ -142,7 +150,7 @@ public class StaticGameState {
                             return WINNER;
                         }
                     }
-                    if (game.getWinner() != EMPTY_PLAYER){
+                    if (game.getWinner() != EMPTY_PLAYER) {
                         if (game.getWinner() == playerId) {
                             System.out.println("Jogador " + playerId + " Ganhou a partida");
                             return WINNER;
@@ -151,7 +159,7 @@ public class StaticGameState {
                             return LOSER;
                         }
                     }
-                    if (game.isTimeout()){
+                    if (game.isTimeout()) {
                         System.out.println("Timeout");
                         return GAME_TIMEOUT;
                     }
@@ -165,7 +173,7 @@ public class StaticGameState {
         }
     }
 
-    public static String getGameBoard(Integer playerId) throws Exception {
+    public static synchronized String getGameBoard(Integer playerId) throws Exception {
         Game playerGame = getPlayerGame(playerId);
         if (playerGame != null) {
             return playerGame.getBoardString();
@@ -187,18 +195,18 @@ public class StaticGameState {
             } else if (playerGame.isOpen()) {/* Verifica se a partida foi iniciada. */
                 if (playerGame.getActualPlayer() == playerId) {
                     char piece = playerGame.getPlayerPiece(playerId);
-                    if (playerGame.getPieceQuantity(piece) < 3){
+                    if (playerGame.getPieceQuantity(piece) < 3) {
                         GameOperations.insertPiece(piece, position, orientation, playerGame);
                         // troca o turno
                         int opponent = playerGame.getOpponentPlayerId(playerId);
                         playerGame.setActualPlayer(opponent);
                         // atualiza o timestamp da ultima ação para controle de timeout
                         playerGame.setLastUpdate(System.currentTimeMillis());
-                        new TimeoutThread(playerGame, WAITING_NEXT_PLAY_TIMEOUT).start();
+                        //new TimeoutThread(playerGame, WAITING_NEXT_PLAY_TIMEOUT).start();
                         //verifica se houve um vencedor
                         defineWinner(playerId, playerGame);
                         return PIECE_PLACED;
-                    }else {
+                    } else {
                         /* fase de posicionamento encerrada */
                         return PHASE_INSERT_ENDED;
                     }
@@ -216,15 +224,16 @@ public class StaticGameState {
     }
 
     /**
-     * Realiza a movimentação das peças de acordo com o estado atual das partidas.
+     * Realiza a movimentação das peças de acordo com o estado atual das
+     * partidas.
      *
-     * @param playerId          - Identificador do jogador que está movimentando a peça
-     * @param actualPosition    - Posição da peça que será movida
+     * @param playerId - Identificador do jogador que está movimentando a peça
+     * @param actualPosition - Posição da peça que será movida
      * @param movementDirection - Direção do movimento
-     * @param orientation       - Orientação do movimento
-     * @param stepSize          - Distância do movimento
+     * @param orientation - Orientação do movimento
+     * @param stepSize - Distância do movimento
      */
-    public static int movePiece(int playerId, int actualPosition, int movementDirection, int stepSize, int orientation)
+    public static synchronized int movePiece(int playerId, int actualPosition, int movementDirection, int stepSize, int orientation)
             throws InvalidPositionException, InvalidOrientationException, PositionAlreadyOccupiedException {
         Game playerGame = getPlayerGame(playerId);
         if (playerGame != null) {
@@ -239,21 +248,31 @@ public class StaticGameState {
                     char movedPiece = playerGame.getPiece(actualPosition);
                     // verifica se a peça que o jogador está tentando movimentar realmente é a dele
                     if (Character.toLowerCase(playerPiece) == Character.toLowerCase(movedPiece)) {
-
-                        GameOperations.movePiece(actualPosition, movementDirection, stepSize, orientation, playerGame);
-                        // muda o turno
-                        int opponent = playerGame.getOpponentPlayerId(playerId);
-                        playerGame.setActualPlayer(opponent);
-                        // atualiza o timestamp para controle de timeout
-                        playerGame.setLastUpdate(System.currentTimeMillis());
-                        new TimeoutThread(playerGame, WAITING_NEXT_PLAY_TIMEOUT).start();
-                        //verifica se houve um vencedor
-                        defineWinner(playerId, playerGame);
-                        return PIECE_PLACED;
+                        boolean moved = true;
+                        try {
+                            moved = GameOperations.movePiece(actualPosition, movementDirection, stepSize, orientation, playerGame);
+                            // muda o turno se o jogador moveu a peça
+                            if (moved) {
+                                int opponent = playerGame.getOpponentPlayerId(playerId);
+                                playerGame.setActualPlayer(opponent);
+                                // atualiza o timestamp para controle de timeout
+                                playerGame.setLastUpdate(System.currentTimeMillis());
+                                //new TimeoutThread(playerGame, WAITING_NEXT_PLAY_TIMEOUT).start();
+                                //verifica se houve um vencedor
+                                defineWinner(playerId, playerGame);
+                                return PIECE_PLACED;
+                            } else {
+                                /* Não fez nada */
+                                return INVALID_MOVE;
+                            }
+                        } catch (InvalidMoveException ex) {
+                            Logger.getLogger(StaticGameState.class.getName()).log(Level.SEVERE, null, ex);
+                            return INVALID_MOVE;
+                        }
 
                     } else {
                         System.out.println("Jogador não pode mover a peça do adversário");
-                        return INVALID_PARAMETERS;
+                        return INVALID_MOVE;
                     }
 
                 } else {
@@ -264,35 +283,36 @@ public class StaticGameState {
                 return GAME_NOT_STARTED;
             }
         } else {
-            throw new RuntimeException("Jogador está sem partida");
+            System.out.println("Jogador sem partida ou não existente: " + playerId);
+            return PLAYER_NOT_FOUND;
+            //throw new RuntimeException("Jogador está sem partida");
         }
     }
 
-    private static void defineWinner(int actualPlayerId, Game game) {
+    private static synchronized void defineWinner(int actualPlayerId, Game game) {
         char winner = GameResultValidator.getWinner(game);
         char playerPiece = game.getPlayerPiece(actualPlayerId);
         char adversaryPiece = game.getAdversarialPiece(actualPlayerId);
         /* Verifica quem é o vencedor, se existir um */
         if (Character.toLowerCase(playerPiece) == Character.toLowerCase(winner)) {
-            System.out.println("Jogador venceu: "+actualPlayerId);
+            System.out.println("Jogador venceu: " + actualPlayerId);
             game.setWinner(actualPlayerId);
             game.closeGame();
         } else if (Character.toLowerCase(adversaryPiece) == Character.toLowerCase(winner)) {
-            System.out.println("Jogador perdeu: "+actualPlayerId);
+            System.out.println("Jogador perdeu: " + actualPlayerId);
             game.setWinner(game.getOpponentPlayerId(actualPlayerId));
             game.closeGame();
         }
     }
 
-    public static int getAdversaryPlayer(Integer playerId) {
+    public static synchronized int getAdversaryPlayer(Integer playerId) {
         Game playerGame = getPlayerGame(playerId);
-        if (playerGame != null) {
+        if (playerGame != null && playerGame.playersReady()) {
             return playerGame.getOpponentPlayerId(playerId);
         } else {
             //Jogador não está em nenhuma partida
             return EMPTY_PLAYER;
         }
     }
-
 
 }

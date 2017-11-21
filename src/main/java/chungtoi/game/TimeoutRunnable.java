@@ -28,6 +28,7 @@ public class TimeoutRunnable implements Runnable {
                 System.out.println("Timeout");
                 game.timeout();
             }
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

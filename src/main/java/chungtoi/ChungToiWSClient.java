@@ -26,18 +26,18 @@ public class ChungToiWSClient {
      * @param args the command line arguments
      * @throws java.io.IOException
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         ChungToiWSServer_Service service = new ChungToiWSServer_Service();
         port = service.getChungToiWSServerPort();
         String basePath = "src/main/resources/";
-        executaTeste(basePath + "ChungToi-0000");
+        executaTeste(basePath + "ChungToi-0100");
     }
 
     private static int preRegistro(String p1name, int p1id, java.lang.String p2name, int p2id) {
         return port.preRegister(p1name, p1id, p2name, p2id);
     }
 
-    private static void executaTeste(String rad) throws IOException {
+    private static void executaTeste(String rad) throws Exception {
         String inFile = rad + ".in";
         FileInputStream is = new FileInputStream(new File(inFile));
         System.setIn(is);

@@ -258,6 +258,8 @@ public class Game {
         try {
             if (game[l][c] == EMPTY) {
                 game[l][c] = piece;
+            } else if (Character.toLowerCase(game[l][c]) == Character.toLowerCase(piece)) {
+                game[l][c] = piece;
             } else {
                 throw new PositionAlreadyOccupiedException(new GamePosition(l, c));
             }

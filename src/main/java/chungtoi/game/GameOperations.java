@@ -1,6 +1,6 @@
 package chungtoi.game;
 
-import chungtoi.exception.InsertPhaseEndedException;
+import chungtoi.exception.InvalidMoveException;
 import chungtoi.exception.InvalidOrientationException;
 import chungtoi.exception.InvalidPositionException;
 import chungtoi.exception.PositionAlreadyOccupiedException;
@@ -41,9 +41,11 @@ public class GameOperations {
      * @param stepSize - Quantidade de passos do movimento
      * @param nextOrientation - Orientação da peça após o movimento
      * @param playerGame - Jogo atual
+     * 
+     * @return verdadeiro se o movimento foi válido
      */
-    public static void movePiece(int actualPosition, int movementDirection, int stepSize, int nextOrientation, Game playerGame)
-            throws InvalidPositionException, PositionAlreadyOccupiedException, InvalidOrientationException {
+    public static boolean movePiece(int actualPosition, int movementDirection, int stepSize, int nextOrientation, Game playerGame)
+            throws InvalidPositionException, PositionAlreadyOccupiedException, InvalidOrientationException, InvalidMoveException {
         GamePosition gameActualPos = playerGame.getPosition(actualPosition);
         GamePosition targetPosition;
         char actualPiece = playerGame.getPiece(actualPosition);
@@ -101,26 +103,39 @@ public class GameOperations {
         }
 
         char nextPiece = getModifiedPiece(actualPiece, nextOrientation);
-
+        
+        // mudança de orientação sem mover a peça
+        if (stepSize == 0 && nextPiece != actualPiece){
+            // Coloca a peça no novo lugar, removendo a peça do lugar antigo
+            playerGame.putChar(gameActualPos.getLine(), gameActualPos.getColumn(), nextPiece);
+            return true;
+        }
         // Antes de inserir, verifica se é uma posição válida do tabuleiro
         if (targetPosition.isValidPosition()) {
             // peça que está na posição que
             char targetPiece = playerGame.getPiece(targetPosition.getLine(), targetPosition.getColumn());
 
             if (movementDirection == NO_MOVENT) {
-                playerGame.changePiece(gameActualPos.getLine(), gameActualPos.getColumn(), nextPiece);
+                if (nextPiece != actualPiece){
+                    playerGame.changePiece(gameActualPos.getLine(), gameActualPos.getColumn(), nextPiece);
+                    return true;
+                }else{
+                    // não fez nada que alterasse o jogo
+                    return false;
+                }
             } else {
                 if (targetPiece == EMPTY) {
                     // Coloca a peça no novo lugar, removendo a peça do lugar antigo
                     playerGame.putChar(targetPosition.getLine(), targetPosition.getColumn(), nextPiece);
                     playerGame.changePiece(gameActualPos.getLine(), gameActualPos.getColumn(), EMPTY);
+                    return true;
                 } else {
                     throw new PositionAlreadyOccupiedException(targetPosition);
                 }
             }
 
         } else {
-            throw new InvalidPositionException(targetPosition);
+            throw new InvalidMoveException(targetPosition);
         }
     }
 

@@ -27,6 +27,10 @@ public class StaticPlayerState {
     private static Integer getNewId() {
         return lastIdentifier.incrementAndGet();
     }
+    
+    public static synchronized void removePlayer(Integer player) {
+        data.remove(player);
+    }
 
     /**
      * Reserva um identificador para um determinado jogador
@@ -98,7 +102,7 @@ public class StaticPlayerState {
      * @param name - Nome do jogador
      * @return Verdadeiro, caso já exista um jogador com o nome
      */
-    private static boolean playerNameAlreadyExists(String name) {
+    private static synchronized boolean playerNameAlreadyExists(String name) {
         for (Player player : data.values()) {
             if (player.getName().equals(name)) {
                 return true;
