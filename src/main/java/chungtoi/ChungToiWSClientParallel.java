@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package chungtoi;
 
 import chungtoi.integration.ws.client.ChungToiWSServer;
@@ -12,13 +7,12 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
-/**
- *
- * @author ichida
- */
-public class ChungToiWSClient {
+public class ChungToiWSClientParallel {
 
     static ChungToiWSServer port;
 
@@ -26,29 +20,72 @@ public class ChungToiWSClient {
      * @param args the command line arguments
      * @throws java.io.IOException
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         ChungToiWSServer_Service service = new ChungToiWSServer_Service();
         port = service.getChungToiWSServerPort();
-        String basePath = "src/main/resources/";
-        executaTeste(basePath + "ChungToi-0000");
+        String basePath = "C:\\Users\\ichida\\Downloads\\ChungToi\\";
+        runSequential(new ArrayList<>(Arrays.asList(basePath + "ChungToi-0000", basePath + "ChungToi-0100", basePath + "ChungToi-1000", basePath + "ChungToi-3000")));
+        runParallel(new ArrayList<>(Arrays.asList(basePath + "ChungToi-2000", basePath + "ChungToi-2500")));
+        runParallel(new ArrayList<>(Arrays.asList(basePath + "ChungToi-4000", basePath + "ChungToi-4500")));
     }
 
-    private static int preRegistro(String p1name, int p1id, java.lang.String p2name, int p2id) {
-        return port.preRegister(p1name, p1id, p2name, p2id);
+    private static void runParallel(List<String> tests) {
+        List<Thread> threads = new ArrayList<>();
+
+        // Prepara threads
+        for (String test : tests) {
+            threads.add(new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        executaTeste(test);
+                    } catch (IOException ex) {
+                        System.out.println("Falha na execução do teste.");
+                        ex.printStackTrace(System.out);
+                    }
+                }
+            });
+        }
+
+        // Roda threads
+        for (Thread t : threads) {
+            t.start();
+        }
+
+        for (Thread t : threads) {
+            try {
+                t.join();
+            } catch (InterruptedException ex) {
+                System.out.println("Falha ao reagrupar thread.");
+                ex.printStackTrace(System.out);
+            }
+        }
+        System.out.println("Teste paralelo concluido.");
     }
 
-    private static void executaTeste(String rad) throws Exception {
+    private static void runSequential(List<String> tests) {
+        for (String test : tests) {
+            try {
+                executaTeste(test);
+            } catch (IOException ex) {
+                System.out.println("Falha ao executar teste " + test);
+                ex.printStackTrace(System.out);
+            }
+        }
+        System.out.println("Teste sequencial concluido.");
+    }
+
+    private static void executaTeste(String rad) throws IOException {
         String inFile = rad + ".in";
         FileInputStream is = new FileInputStream(new File(inFile));
-        System.setIn(is);
+        //System.setIn(is);
 
         String outFile = rad + ".out";
         FileWriter outWriter = new FileWriter(outFile);
-        try (PrintWriter out = new PrintWriter(outWriter)) {
-            Scanner leitura = new Scanner(System.in);
+        try (PrintWriter out = new PrintWriter(outWriter); Scanner leitura = new Scanner(is)) {
             int numOp = leitura.nextInt();
             for (int i = 0; i < numOp; ++i) {
-                // System.out.print("\r" + rad + ": " + (i + 1) + "/" + numOp);
+                System.out.print("\r" + rad + ": " + (i + 1) + "/" + numOp);
                 int op = leitura.nextInt();
                 String parametros = leitura.next();
                 String param[] = parametros.split(":", -1);
@@ -122,7 +159,6 @@ public class ChungToiWSClient {
             }
             System.out.println("... terminado!");
             out.close();
-            leitura.close();
         }
     }
 
